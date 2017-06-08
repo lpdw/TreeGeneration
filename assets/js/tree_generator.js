@@ -20,6 +20,18 @@ $('body').keypress(function() {
     default:
       point_input = traitementInput(list_input);
 
+      /* TODO
+      Si branche existe
+        alors compte feuille
+        si trop feuille
+          créer nouveau branche
+            ajouter feuille
+
+      si branche dosn't existe
+        créer nouveau branche
+          ajouter feuille
+      */
+
       break;
   }
 
@@ -35,4 +47,11 @@ function traitementInput(input)
   }
 
   return point_input;
+}
+
+var algo = {
+  //branches = [],
+  generate: function(tree, datas){
+    tree.display.branche({})
+  }
 }
