@@ -47,6 +47,7 @@ oCanvas.domReady(function () {
   });
 
   sousbranche.addChild(soussousbranche);
+  branche.points.push({x:tree.width/2 + 1,y:420})
   // soussousbranche.animate({
 	// 	animationStade: 100
 	// }, {
@@ -54,9 +55,13 @@ oCanvas.domReady(function () {
   //   duration: 2000
 	// });
   console.log(branche);
-
+  //branche.scalingX = 0.4;
+  //branche.scalingY = 0.4;
   branche.dragAndDrop();
   tree.redraw();
  /*TODO: Socket.io : recevoir nouvelles données du serveur
- Faire touner l'algo de génération avec les nouvelles données*/
+ // Faire touner l'algo de génération avec les nouvelles données*/
+ //  algo.init(tree);
+  algo.generate(tree);
+
 });

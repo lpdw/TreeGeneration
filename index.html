@@ -26,4 +26,14 @@
   <script type="text/javascript" src="assets/js/background/granim.min.js"></script>
   <script type="text/javascript" src="assets/js/background/background.js"></script>
   <!-- fin script background -->
+  <!-- socket.io -->
+  <script type="text/javascript" src="assets/js/socket.io.js"></script>
+  <script>
+    var socket = io.connect('https://api-tree.herokuapp.com/');
+    socket.on('new_inputs', function (data) {
+      // New Branch
+      console.log(data);
+      socket.emit('my other event', { my: 'data' });
+    });
+  </script>
 </html>
