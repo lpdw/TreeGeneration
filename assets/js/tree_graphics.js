@@ -98,28 +98,29 @@ var branche = function (settings, core){
     core: core,
     animationStade:100,
     points:[],
-    isInit:false,
+    isInit: false,
+    join: "square",
     init: function(){
       console.log(this);
-      if (this.parent != "undefined" && this.startPoint && !this.isInit){
-        var origin = this.parent.points[Math.round((this.startPoint) / 100 * (this.parent.points.length - 1 ) )];
-        console.log(this.parent.points);
-        console.log(this.points);
-        this.points = this.points.map(function(point){
-          return {x: (origin.x + point.x), y: (origin.y + point.y)};
-        })
-        console.log(this.points);
-        this.isInit = true;
-      }
     },
     draw: function(){
       var canvas = this.core.canvas;
-
         canvas.beginPath();
         canvas.lineWidth = this.strokeWidth;
         canvas.strokeStyle = this.strokeColor;
-        canvas.lineJoin = "round";
-        canvas.lineCap = "round";
+        canvas.lineJoin = this.join;
+        canvas.lineCap = this.cap;
+
+
+        if (settings.parent != "undefined" && settings.startPoint && !this.isInit){
+          var origin = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          console.log(settings.points);
+          this.points = settings.points.map(function(point){
+            return {x: (origin.x + point.x), y: (origin.y + point.y)};
+          });
+          console.log("Init");
+          this.isInit = true;
+        }
 
         if(this.points == null )
           return;
@@ -135,6 +136,13 @@ var branche = function (settings, core){
         }
         canvas.stroke();
         canvas.closePath();
+
+        //Pris de OCanvas directement
+        if(this.clipChildren) {
+          canvas.clip();
+        }
+
+        return this;
     }
   },settings);
 };

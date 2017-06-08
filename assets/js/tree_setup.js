@@ -15,44 +15,45 @@ oCanvas.domReady(function () {
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
     tree.redraw();
   };
-  var title = tree.display.text({size: 40, x:HTMLcanvas.width/2,origin:{x:"center"},fill: "#222", text:"MotherF***ing Tree"}).add();
+  //var title = tree.display.text({size: 40, x:HTMLcanvas.width/2,origin:{x:"center"},fill: "#222", text:"MotherF***ing Tree"}).add();
 
 
-  var points = [{x:HTMLcanvas.width/2,y:0}, {x:HTMLcanvas.width/2 + 2,y:50}, {x:HTMLcanvas.width/2 - 4,y:100}, {x:HTMLcanvas.width/2 - 10,y:150}, {x:HTMLcanvas.width/2 + 1,y:320}];
+  var points = [{x:tree.width/2,y:0}, {x:tree.width/2 + 2,y:50}, {x:tree.width/2 - 4,y:100}, {x:tree.width/2 - 10,y:150}, {x:tree.width/2 + 1,y:320}];
   var sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
   var sous_sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
 
 
   var branche = tree.display.branche({
                             points: points,
-                            strokeWidth: 10,
-                            strokeColor: "green",
+                            strokeWidth: 3,
+                            strokeColor: "black",
                             animationStade: 100}).add();
   var sousbranche = tree.display.branche({
-    strokeWidth:7,
-    strokeColor:"green",
+    strokeWidth:2,
+    strokeColor:"black",
     points: sous_points,
-    startPoint: 60,
-    parent: branche
-  }).add();
-  //branche.addChild(sousbranche);
+    startPoint: 90
+  });
+  branche.addChild(sousbranche);
   var soussousbranche = tree.display.branche({
-    strokeWidth:5,
-    strokeColor:"green",
+    strokeWidth:15,
+    strokeColor:"black",
     points: sous_sous_points,
-    startPoint: 100,
-    parent: sousbranche,
-    animationStade:0,
-  }).add();
-  //sousbranche.addChild(soussousbranche);
-  soussousbranche.animate({
-		animationStade: 100
-	}, {
-		easing: "ease-out-elastic",
-    duration: 2000
-	});
+    startPoint: 100
+  });
 
-  title.dragAndDrop();
+  sousbranche.addChild(soussousbranche);
+  // soussousbranche.animate({
+	// 	animationStade: 100
+	// }, {
+	// 	easing: "ease-out-elastic",
+  //   duration: 2000
+	// });
+  console.log(branche);
+  branche.scalingX = 0.4;
+  branche.scalingY = 0.4;
+  branche.dragAndDrop();
+  tree.redraw();
  /*TODO: Socket.io : recevoir nouvelles données du serveur
  Faire touner l'algo de génération avec les nouvelles données*/
 });
