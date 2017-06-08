@@ -3,22 +3,27 @@
   <head>
     <meta charset="utf-8">
     <title>Treeton</title>
-    <style media="screen">
-      body{
-        margin:0;
-        text-align: center;
-      }
-    </style>
+    <meta description="arbre généré à partir d'input donnés">
+    <link rel="stylesheet" href="assets/css/main.css"> <!-- css de base -->
+    <link rel="stylesheet" href="assets/css/background.css">
   </head>
+  <canvas id="canvas-image"></canvas>
   <body>
       <canvas id='tree' width='200' height='100'></canvas>
+
   </body>
+  <!-- sripts arbre -->
   <script
     src="https://code.jquery.com/jquery-2.2.4.min.js"
     integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
     crossorigin="anonymous"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.8.7/ocanvas.min.js"></script>
-  <!-- <script src="tree_graphics.js"></script> -->
-  <script src="tree_generator.js"></script>
-  <!-- <script src="tree_setup.js"></script> -->
+  <script src="assets/js/tree_graphics.js"></script>
+  <script src="assets/js/tree_generator.js"></script>
+  <script src="assets/js/tree_setup.js"></script>
+  <!-- fin scripts arbre -->
+  <!-- script background -->
+  <script type="text/javascript" src="assets/js/background/granim.min.js"></script>
+  <script type="text/javascript" src="assets/js/background/background.js"></script>
+  <!-- fin script background -->
 </html>
