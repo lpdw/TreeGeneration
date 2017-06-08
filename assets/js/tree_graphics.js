@@ -30,7 +30,6 @@ var leaf = function (settings, core){
     animationStade:0,
     points:[],
     init: function(){
-      console.log("hello init - 1");
       var canvas = this.core.canvas;
 
       // canvas.beginPath();
@@ -92,6 +91,8 @@ var leaf = function (settings, core){
   },settings);
 };
 oCanvas.registerDisplayObject("leaf", leaf, "init");
+
+
 var branche = function (settings, core){
   return oCanvas.extend({
     core: core,
@@ -102,9 +103,7 @@ var branche = function (settings, core){
     draw: function(){
       var canvas = this.core.canvas,
         points = this.points;
-
         if (this.parent.points != "undefined" && this.startPoint){
-          console.log();
           var origin = this.parent.points[Math.round((this.startPoint) / 100 * (this.parent.points.length - 1 ) )];
           points = points.map(function(point){
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
@@ -119,15 +118,14 @@ var branche = function (settings, core){
         if(points == null )
           return;
         var progress = this.animationStade / 100;
+        console.log(progress);
         for(var i = 0; i < points.length; i++){
-          if(i == points.length - 1 ){
+          if(i == points.length - 1 && progress != 1){
             // Anime la dernière partie du chemin, selon le paramètre animationStade
             canvas.lineTo(points[i - 1].x + ((points[i].x - points[i - 1].x) * progress) ,trueY(points[i - 1].y + ((points[i].y - points[i - 1].y) * progress)));
             continue;
           }
           canvas.lineTo(points[i].x, trueY(points[i].y));
-
-          //canvas.lineWidth = (1 - (i / length)) * stroke;
         }
         canvas.stroke();
         canvas.closePath();
