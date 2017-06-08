@@ -1,5 +1,6 @@
 oCanvas.domReady(function () {
   var HTMLcanvas = document.getElementById("tree");
+  var HTMLbutton = document.getElementById("button");
   HTMLcanvas.height = window.innerHeight;
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
 
@@ -9,7 +10,10 @@ oCanvas.domReady(function () {
   	background: "transparent"
   });
 
-
+  HTMLbutton.addEventListener("click", function(e){
+    var prevpoint = branche.points[branche.points.length - 1];
+    branche.addPoint({x:  prevpoint.x + 5 * Math.random(), y: prevpoint.y + 11 * Math.random()});
+  });
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
@@ -50,8 +54,7 @@ oCanvas.domReady(function () {
   //   duration: 2000
 	// });
   console.log(branche);
-  branche.scalingX = 0.4;
-  branche.scalingY = 0.4;
+
   branche.dragAndDrop();
   tree.redraw();
  /*TODO: Socket.io : recevoir nouvelles données du serveur

@@ -101,7 +101,6 @@ var branche = function (settings, core){
     isInit: false,
     join: "square",
     init: function(){
-      console.log(this);
     },
     draw: function(){
       var canvas = this.core.canvas;
@@ -114,11 +113,10 @@ var branche = function (settings, core){
 
         if (settings.parent != "undefined" && settings.startPoint && !this.isInit){
           var origin = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
-          console.log(settings.points);
           this.points = settings.points.map(function(point){
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
-          console.log("Init");
+
           this.isInit = true;
         }
 
@@ -134,6 +132,7 @@ var branche = function (settings, core){
           }
           canvas.lineTo(points[i].x, trueY(points[i].y));
         }
+
         canvas.stroke();
         canvas.closePath();
 
@@ -143,6 +142,16 @@ var branche = function (settings, core){
         }
 
         return this;
+    },
+    addPoint(point){
+      this.points.push(point);
+      this.animationStade = 0,
+      this.animate({
+    		animationStade: 100
+    	   }, {
+    		easing: "ease-out-elastic",
+        duration: 2000
+    	});
     }
   },settings);
 };
