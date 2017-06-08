@@ -92,7 +92,7 @@ var leaf = function (settings, core){
 };
 oCanvas.registerDisplayObject("leaf", leaf, "init");
 
-
+// format d'un nouveau point pour la branche {size, angle}
 var branche = function (settings, core){
   return oCanvas.extend({
     core: core,
@@ -100,6 +100,7 @@ var branche = function (settings, core){
     points:[],
     isInit: false,
     join: "square",
+    originPoint:undefined,
     init: function(){
     },
     draw: function(){
@@ -111,9 +112,11 @@ var branche = function (settings, core){
         canvas.lineCap = this.cap;
 
 
-        if (settings.parent != "undefined" && settings.startPoint && !this.isInit){
-          var origin = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+        if (this.parent.points != undefined && settings.startPoint && !this.isInit){
+          this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          var origin = this.originPoint;
           this.points = settings.points.map(function(point){
+            console.log(point);
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
 
@@ -144,6 +147,10 @@ var branche = function (settings, core){
         return this;
     },
     addPoint(point){
+      // if (this.originPoint != undefined){
+      //   point.x += this.originPoint.x;
+      //   point.y += this.originPoint.y;
+      // }
       this.points.push(point);
       this.animationStade = 0,
       this.animate({

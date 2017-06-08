@@ -11,8 +11,8 @@ oCanvas.domReady(function () {
   });
 
   HTMLbutton.addEventListener("click", function(e){
-    var prevpoint = branche.points[branche.points.length - 1];
-    branche.addPoint({x:  prevpoint.x + 5 * Math.random(), y: prevpoint.y + 11 * Math.random()});
+    var prevpoint = sousbranche.points[sousbranche.points.length - 1];
+    sousbranche.addPoint({x:  prevpoint.x + 5 * Math.random(), y: prevpoint.y + 11 * Math.random()});
   });
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
