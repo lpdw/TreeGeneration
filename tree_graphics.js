@@ -1,5 +1,5 @@
 /******************************************** Extend exemple ***************************************/
-
+/* TODO: Objets de base Leaf et Branche */
 var orbite = function (settings, core){
   return oCanvas.extend({
     core: core,
