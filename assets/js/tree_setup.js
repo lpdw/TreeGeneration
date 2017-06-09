@@ -12,7 +12,26 @@ oCanvas.domReady(function () {
 
   HTMLbutton.addEventListener("click", function(e){
     var prevpoint = sousbranche.points[sousbranche.points.length - 1];
-    sousbranche.addPoint({x:  prevpoint.x + 5 * Math.random(), y: prevpoint.y + 11 * Math.random()});
+    var newPoint = {
+      x: prevpoint.x + 5 * Math.random(),
+      y: prevpoint.y + 11 * Math.random()
+    };
+
+    var ellipse = tree.display.ellipse({
+      x: newPoint.x,
+      y: trueY(newPoint.y),
+      radius: 15,
+      fill: "radial-gradient(#8ec2e2, rgba(255, 255, 255, 0))",
+      opacity: 0.5
+    });
+    tree.addChild(ellipse);
+
+    // ellipse.fadeIn("short", "ease-in-out-cubic", function () { });
+    sousbranche.addPoint(newPoint);
+    setTimeout(function(){
+      ellipse.fadeOut("short", "ease-in-out-cubic", function () { });
+    }, 500);
+
   });
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
