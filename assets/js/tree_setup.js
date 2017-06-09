@@ -65,12 +65,12 @@ oCanvas.domReady(function () {
     startPoint: 90
   });
   branche.addChild(sousbranche);
-  /*var soussousbranche = tree.display.branche({
+  var soussousbranche = tree.display.branche({
     strokeWidth:15,
     strokeColor:"black",
     points: sous_sous_points,
     startPoint: 100
-  });*/
+  });
 
   sousbranche.addChild(soussousbranche);
   var nleaf = tree.display.leaf({

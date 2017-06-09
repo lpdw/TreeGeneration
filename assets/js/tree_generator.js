@@ -15,7 +15,6 @@ var SousbranchetypeA = [{x:0,y:0}, {x:10,y:10}];
 var SousbranchetypeB = [{x:0,y:0}, {x:10,y:-10}];
 
 var i =0;
-var position = 85;
 
 var algo = function(tree) {
   tree_global = tree;
@@ -68,14 +67,13 @@ var algo = function(tree) {
         BranchePrincipal.push({name:"branche_principal_E", branche:branche_principal_E});
       }
 
-      if(i==0 && position>0){
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeA, position, "branche_principal_A", branche_principal_A));
+      if(i==0){
+        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeA, 100, "branche_principal_A", branche_principal_A));
         position=position-20;
         i++;
       }
-      else if(i==1 && position>0){
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeB, position, "branche_principal_A", branche_principal_A));
-        position=position-20;
+      else{
+        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeB, 100, "branche_principal_A", branche_principal_A));
         i--;
       }
     },
