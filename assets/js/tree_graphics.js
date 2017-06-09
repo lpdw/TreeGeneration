@@ -151,15 +151,17 @@ var branche = function (settings, core){
       //   point.x += this.originPoint.x;
       //   point.y += this.originPoint.y;
       // }
+      // this.points.push(ellipse);
       this.points.push(point);
       this.animationStade = 0,
       this.animate({
     		animationStade: 100
     	   }, {
     		easing: "ease-out-elastic",
-        duration: 2000
+        duration: 500
     	});
     }
   },settings);
 };
+
 oCanvas.registerDisplayObject("branche", branche, "init");

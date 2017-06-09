@@ -36,7 +36,8 @@
     var socket = io.connect('https://api-tree.herokuapp.com/');
     socket.on('new_inputs', function (data) {
       // New Branch
-      //console.log(data);
+      console.log(data);
+      $('#button').click();
       socket.emit('my other event', { my: 'data' });
       algo(tree_global).generate(data);
     });
