@@ -13,6 +13,16 @@ function sleep(miliseconds) {
 function trueY(y){
   return document.getElementById("tree").height - y;
 }
+
+function drawPoly(ctx, start, sides, angle, size){
+  var center = {x: start.x + (size/2 * Math.cos(angle)), y: start.y + (size/2 * Math.sin(angle)) };
+  var a = (Math.PI * 2) / sides;
+  ctx.moveTo(center.x + (size * Math.cos(angle + Math.PI * 2)), trueY(center.y + ( size * Math.sin(angle + Math.PI * 2))));
+
+  for (var i = 1; i <= sides; i++) {
+    ctx.lineTo( center.x + ( size * Math.cos(angle + a*i)), trueY(center.y + ( size * Math.sin(angle + a*i))));
+  }
+}
 /* Parametres :
 Feuilles : origin,
         : couleur
@@ -67,16 +77,18 @@ var leaf = function (settings, core){
 
         if(this.shape === "square"){
             //
-            var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
-            canvas.rect(center.x- (size), trueY(center.y)- (size), size*2, size*2);
-            //canvas.stroke();
+            //var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
+            //canvas.rect(center.x- (size), trueY(center.y)- (size), size*2, size*2);
+            drawPoly(canvas,end_line,4,angle,size);
+            canvas.stroke();
 
             if(this.shapeFill) {
               canvas.stroke();
               canvas.closePath();
               canvas.beginPath();
               canvas.lineWidth = 0;
-              canvas.fillRect(center.x-(size/2), trueY(center.y)-(size/2), size, size);
+              // canvas.fillRect(center.x-(size/2), trueY(center.y)-(size/2), size, size);
+              drawPoly(canvas,end_line,4,angle,size);
               // canvas.fill();
 
             }
@@ -98,27 +110,16 @@ var leaf = function (settings, core){
           }
 
         }else if(this.shape === "triangle"){
-          //var center = {x: end_line.x + (size * Math.cos(angle))), y: end_line.y + (size * Math.sin(angle))) };
-          console.log(angle);
-          var firstP = {x: end_line.x + (size * Math.cos(Math.radians(180))), y: end_line.y + (size * Math.sin(Math.radians(180)))};
-          var secondP = {x: end_line.x + (2 * size * Math.cos(angle) ), y: end_line.y + (2 * size * Math.sin(angle))};
-          var thirdP = {x: end_line.x + (size * Math.cos(0)), y: end_line.y + (size * Math.sin(0))};
-
-          var nfirstP = {
-                x: firstP.x * Math.cos(angle) - firstP.y * Math.sin(angle),
-                y: firstP.y * Math.cos(angle) + firstP.x * Math.sin(angle)
-              };
-          var nthirdP = {
-                x: thirdP.x * Math.cos(angle) - thirdP.y * Math.sin(angle),
-                y: thirdP.y * Math.cos(angle) + thirdP.x * Math.sin(angle)
-              };
-
-          canvas.moveTo(nfirstP.x, trueY(nfirstP.y));
-          canvas.lineTo(secondP.x, trueY(secondP.y));
-          canvas.lineTo(nthirdP.x, trueY(nthirdP.y));
-          canvas.lineTo(nfirstP.x, trueY(nfirstP.y));
-
-
+          // var center = {x: end_line.x + (size/2 * Math.cos(angle)), y: end_line.y + (size/2 * Math.sin(angle)) };
+          // console.log(angle);
+          //
+          // var a = (Math.PI * 2) / 3;
+          // canvas.moveTo(center.x + (size * Math.cos(angle + Math.PI * 2)), trueY(center.y + ( size * Math.sin(angle + Math.PI * 2))));
+          //
+          // for (var i = 1; i <= 3; i++) {
+          //   canvas.lineTo( center.x + ( size * Math.cos(angle + a*i)), trueY(center.y + ( size * Math.sin(angle + a*i))));
+          // }
+          drawPoly(canvas,end_line,3,angle,size);
           // sceneSatellites[i].x = (x * Math.cos(a) - y * Math.sin(a));
           // sceneSatellites[i].y = (y * Math.cos(a) + x * Math.sin(a));
 

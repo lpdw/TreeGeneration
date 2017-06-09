@@ -57,21 +57,14 @@ oCanvas.domReady(function () {
                             join: "round",
                             cap: "round",
                             animationStade: 100}).add();
-  /*var sousbranche = tree.display.branche({
+  var sousbranche = tree.display.branche({
     strokeWidth:2,
     strokeColor:"black",
     points: sous_points,
     startPoint: 90
   });
   branche.addChild(sousbranche);
-  /*var soussousbranche = tree.display.branche({
-    strokeWidth:15,
-    strokeColor:"black",
-    points: sous_sous_points,
-    startPoint: 100
-  });*/
 
-  sousbranche.addChild(soussousbranche);
   var nleaf = tree.display.leaf({
     strokeWidth:2,
     strokeColor:"green",
@@ -88,7 +81,7 @@ oCanvas.domReady(function () {
     strokeColor:"red",
     startPoint: 20,
     size:15,
-    angle:70,
+    angle:60,
     shape: "square",
     shapeFill: true
   });
@@ -120,16 +113,15 @@ oCanvas.domReady(function () {
   //branche.scalingX = 0.4;
   //branche.scalingY = 0.4;
   tree.redraw();
- /*TODO: Socket.io : recevoir nouvelles données du serveur
  // Faire touner l'algo de génération avec les nouvelles données*/
  //  algo.init(tree);
   // algo.generate(tree);
   var i = 0;
   tree.setLoop(function () {
-    nleaf.angle +=  Math.cos(i) - 0.5 ;
-    nleafsquare.angle +=  Math.cos(i)- 0.5;
-    nleaftriangle.angle += Math.cos(i)- 0.5;
-    i += 0.01;
+    nleaf.angle = nleaf.angle > 180 ? nleaf.angle + ( (Math.cos(i)- 0.5) * 5) : nleaf.angle - ( (Math.cos(i)- 0.5) * 5);
+    nleafsquare.angle = nleafsquare.angle > 180 ? nleafsquare.angle + ( (Math.cos(i)- 0.5) * 5) : nleafsquare.angle - ( (Math.cos(i)- 0.5) * 5);
+    nleaftriangle.angle = nleaftriangle.angle > 180 ? nleaftriangle.angle + ( (Math.cos(i)- 0.5) * 5) : nleaftriangle.angle - ( (Math.cos(i)- 0.5) * 5);
+    i = i > 10 ? 0 : i +0.01 ;
   });
   //tree.timeline.start();
   var algo_tree = algo(tree);
