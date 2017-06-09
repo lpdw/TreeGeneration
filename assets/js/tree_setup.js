@@ -11,6 +11,7 @@ oCanvas.domReady(function () {
   });
 
   HTMLbutton.addEventListener("click", function(e){
+
     var prevpoint = sousbranche.points[sousbranche.points.length - 1];
     var newPoint = {
       x: prevpoint.x + 5 * Math.random(),
@@ -64,6 +65,12 @@ oCanvas.domReady(function () {
     startPoint: 90
   });
   branche.addChild(sousbranche);
+  var soussousbranche = tree.display.branche({
+    strokeWidth:15,
+    strokeColor:"black",
+    points: sous_sous_points,
+    startPoint: 100
+  });
 
   var nleaf = tree.display.leaf({
     strokeWidth:2,

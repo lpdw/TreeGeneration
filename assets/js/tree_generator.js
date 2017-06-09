@@ -11,11 +11,10 @@ var branchetypeC = [{x:0,y:0}, {x:50,y:30}, {x:100,y:50}, {x:150, y:40}, {x:200,
 var branchetypeD = [{x:0,y:0}, {x:-50,y:25}, {x:-75,y:30}, {x:-80,y:40}, {x:-90,y:60}, {x:-100,y:80}, {x:-150,y:100}, {x:-200,y:150}];
 var branchetypeE = [{x:0,y:0}, {x:5,y:-5}, {x:5,y:20}, {x:-5,y:30}, {x:5,y:50}, {x:-5,y:100}, {x:5,y:250}];
 
-var SousbranchetypeA = [{x:0,y:0}, {x:10,y:10}, {x:35,y:20}, {x:40,y:30}, {x:70,y:45}];
-var SousbranchetypeB = [{x:0,y:0}, {x:10,y:-10}, {x:35,y:-20}, {x:40,y:-30}, {x:70,y:-45}];
+var SousbranchetypeA = [{x:0,y:0}, {x:10,y:10}];
+var SousbranchetypeB = [{x:0,y:0}, {x:10,y:-10}];
 
 var i =0;
-var position = 85;
 
 var algo = function(tree) {
   tree_global = tree;
@@ -69,13 +68,12 @@ var algo = function(tree) {
       }
 
       if(i==0){
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeA, position, "branche_principal_A", branche_principal_A));
+        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeA, 100, "branche_principal_A", branche_principal_A));
         position=position-20;
         i++;
       }
       else{
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeB, 50, "branche_principal_A", branche_principal_A));
-        position=position-20;
+        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeB, 100, "branche_principal_A", branche_principal_A));
         i--;
       }
     },
@@ -92,11 +90,12 @@ function trouverBranche(name) {
 
 
 
+
 function initBranche(tree_global, branchetype, InitialPoint){
   var branche =  tree_global.display.branche({
     strokeWidth:2,
     strokeColor:"black",
-    points: branchetype,
+    points: branchetype.slice(0,2),
     join: "round",
     cap: "round",
     startPoint: InitialPoint,
