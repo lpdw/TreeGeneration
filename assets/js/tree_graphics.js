@@ -167,7 +167,7 @@ var branche = function (settings, core){
           this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
           var origin = this.originPoint;
           this.points = settings.points.map(function(point){
-            console.log(point);
+            //console.log(point);
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
 
@@ -202,6 +202,7 @@ var branche = function (settings, core){
       //   point.x += this.originPoint.x;
       //   point.y += this.originPoint.y;
       // }
+      // this.points.push(ellipse);
       this.points.push(point);
       this.animationStade = 0,
       this.animate({
@@ -213,4 +214,5 @@ var branche = function (settings, core){
     }
   },settings);
 };
+
 oCanvas.registerDisplayObject("branche", branche, "init");

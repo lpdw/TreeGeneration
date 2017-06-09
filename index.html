@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="assets/css/main.css"> <!-- css de base -->
     <link rel="stylesheet" href="assets/css/background.css">
   </head>
-  <!--<canvas id="canvas-image"></canvas>-->
+
   <body>
+
+
+
+      <canvas id="canvas-image" ></canvas>
       <canvas id='tree' width='200' height='100'></canvas>
       <button type="button" name="button" id="button">add</button>
   </body>
@@ -23,8 +27,8 @@
   <script src="assets/js/tree_setup.js"></script>
   <!-- fin scripts arbre -->
   <!-- script background -->
-  <script type="text/javascript" src="assets/js/background/granim.min.js"></script>
-  <script type="text/javascript" src="assets/js/background/background.js"></script>
+  <!-- <script type="text/javascript" src="assets/js/background/granim.min.js"></script> -->
+  <!-- <script type="text/javascript" src="assets/js/background/background.js"></script> -->
   <!-- fin script background -->
   <!-- socket.io -->
   <script type="text/javascript" src="assets/js/socket.io.js"></script>
@@ -33,7 +37,9 @@
     socket.on('new_inputs', function (data) {
       // New Branch
       console.log(data);
+      $('#button').click();
       socket.emit('my other event', { my: 'data' });
+      algo(tree_global).generate(data);
     });
   </script>
 </html>
