@@ -72,8 +72,45 @@ oCanvas.domReady(function () {
     startPoint: 100
   });*/
 
+  sousbranche.addChild(soussousbranche);
+  var nleaf = tree.display.leaf({
+    strokeWidth:2,
+    strokeColor:"green",
+    startPoint: 90,
+    size:6,
+    angle:270,
+    shape: "circle",
+    shapeFill: true
+  });
+  sousbranche.addChild(nleaf);
+
+  var nleafsquare = tree.display.leaf({
+    strokeWidth:2,
+    strokeColor:"red",
+    startPoint: 20,
+    size:15,
+    angle:70,
+    shape: "square",
+    shapeFill: true
+  });
+  sousbranche.addChild(nleafsquare);
+
+  var nleaftriangle = tree.display.leaf({
+    strokeWidth:2,
+    strokeColor:"purple",
+    startPoint: 40,
+    size:15,
+    angle:250,
+    shape: "triangle",
+    shapeFill: false
+  });
+
+  sousbranche.addChild(nleaftriangle);
+  branche.points.push({x:tree.width/2 + 1,y:420})
+
   //sousbranche.addChild(soussousbranche);
   //branche.points.push({x:tree.width/2 + 1,y:420})
+
   // soussousbranche.animate({
 	// 	animationStade: 100
 	// }, {
@@ -87,6 +124,15 @@ oCanvas.domReady(function () {
  /*TODO: Socket.io : recevoir nouvelles données du serveur
  // Faire touner l'algo de génération avec les nouvelles données*/
  //  algo.init(tree);
+  // algo.generate(tree);
+  var i = 0;
+  tree.setLoop(function () {
+    nleaf.angle +=  Math.cos(i) - 0.5 ;
+    nleafsquare.angle +=  Math.cos(i)- 0.5;
+    nleaftriangle.angle += Math.cos(i)- 0.5;
+    i += 0.01;
+  });
+  //tree.timeline.start();
   var algo_tree = algo(tree);
 
 });

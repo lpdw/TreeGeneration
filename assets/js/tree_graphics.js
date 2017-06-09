@@ -1,3 +1,9 @@
+
+/********************** global functions *******/
+Math.radians = function(degrees) {
+  return degrees * Math.PI / 180;
+};
+
 function sleep(miliseconds) {
    var currentTime = new Date().getTime();
 
@@ -23,70 +29,115 @@ Branche:
 var leaf = function (settings, core){
   return oCanvas.extend({
     core: core,
-    // shapeType: "radial",
-    // minorAxis:0,
-    // omega:0,
-    // offset:{x:0,y:0},
-    animationStade:0,
-    points:[],
+    animationStade:100,
+    isInit: false,
+    join: "square",
+    originPoint:undefined,
+    shape: "square",
+    shapeFill: false,
+    size:1,
+    angle:90,
     init: function(){
-      var canvas = this.core.canvas;
-
-      // canvas.beginPath();
-      // canvas.lineWidth = 10;
-      // canvas.strokeStyle = 'green';
-      // for(var i = 0 ; i<7 ; i++){
-      //     canvas.lineTo(50 + (50 *  (Math.cos(i) + 1) ), 50 + (50 * (Math.sin(i) + 1)) );
-      //     sleep(200);
-      //     console.log("hello init: " + i);
-      //     canvas.redraw();
-      // }
-      // canvas.stroke();
-      // canvas.closePath();
-
     },
     draw: function(){
-      console.log("hello draw");
-      console.log(this.animationStade);
       var canvas = this.core.canvas,
-        origin = this.getOrigin();
-        points = this.points;
-        console.log(points);
+        origin = this.getOrigin(),
+        size = this.size,
+        angle = Math.radians(this.angle);
+
+
+        if (this.parent.points != undefined && settings.startPoint && !this.isInit){
+
+          this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          this.isInit = true;
+        }
         canvas.beginPath();
-        canvas.lineWidth = 5;
-        if(points == null )
-          return
-        canvas.lineJoin = "bevel";
-        var length = points.length * (this.animationStade / 100);
-        for(var i = 0; i < length; i++){
-          canvas.lineTo(points[i].x, points[i].y);
+        canvas.lineWidth = this.strokeWidth;
+        canvas.strokeStyle = this.strokeColor;
+        canvas.fillStyle = this.strokeColor;
+        canvas.lineJoin = this.join;
+        canvas.lineCap = this.cap;
+
+        canvas.moveTo(this.originPoint.x, trueY(this.originPoint.y));
+        var end_line = {x: this.originPoint.x + (size * 2 * Math.cos(angle)), y: this.originPoint.y + (size * 2 * Math.sin(angle)) };
+        canvas.lineTo(end_line.x, trueY(end_line.y));
+        canvas.stroke();
+        canvas.closePath();
+        canvas.beginPath();
+
+        if(this.shape === "square"){
+            //
+            var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
+            canvas.rect(center.x- (size), trueY(center.y)- (size), size*2, size*2);
+            //canvas.stroke();
+
+            if(this.shapeFill) {
+              canvas.stroke();
+              canvas.closePath();
+              canvas.beginPath();
+              canvas.lineWidth = 0;
+              canvas.fillRect(center.x-(size/2), trueY(center.y)-(size/2), size, size);
+              // canvas.fill();
+
+            }
+            //canvas.setTransform(1, 0, 0, 1, 0, 0);
+        }
+        else if(this.shape === "circle") {
+          //var radius = size * 2;
+          var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
+          canvas.arc(center.x, trueY(center.y), size, 0, Math.PI * 2, false);
+          if(this.shapeFill){
+            canvas.stroke();
+            canvas.closePath();
+            canvas.beginPath();
+
+            canvas.lineWidth = 0;
+
+            canvas.arc(center.x, trueY(center.y), size/4, 0, Math.PI * 2, false);
+            canvas.fill();
+          }
+
+        }else if(this.shape === "triangle"){
+          //var center = {x: end_line.x + (size * Math.cos(angle))), y: end_line.y + (size * Math.sin(angle))) };
+          console.log(angle);
+          var firstP = {x: end_line.x + (size * Math.cos(Math.radians(180))), y: end_line.y + (size * Math.sin(Math.radians(180)))};
+          var secondP = {x: end_line.x + (2 * size * Math.cos(angle) ), y: end_line.y + (2 * size * Math.sin(angle))};
+          var thirdP = {x: end_line.x + (size * Math.cos(0)), y: end_line.y + (size * Math.sin(0))};
+
+          var nfirstP = {
+                x: firstP.x * Math.cos(angle) - firstP.y * Math.sin(angle),
+                y: firstP.y * Math.cos(angle) + firstP.x * Math.sin(angle)
+              };
+          var nthirdP = {
+                x: thirdP.x * Math.cos(angle) - thirdP.y * Math.sin(angle),
+                y: thirdP.y * Math.cos(angle) + thirdP.x * Math.sin(angle)
+              };
+
+          canvas.moveTo(nfirstP.x, trueY(nfirstP.y));
+          canvas.lineTo(secondP.x, trueY(secondP.y));
+          canvas.lineTo(nthirdP.x, trueY(nthirdP.y));
+          canvas.lineTo(nfirstP.x, trueY(nfirstP.y));
+
+
+          // sceneSatellites[i].x = (x * Math.cos(a) - y * Math.sin(a));
+          // sceneSatellites[i].y = (y * Math.cos(a) + x * Math.sin(a));
+
+          canvas.stroke();
+
+          if(this.shapeFill) {
+            canvas.stroke();
+            canvas.closePath();
+            canvas.beginPath();
+            canvas.lineWidth = 0;
+            canvas.fillRect(center.x-2.5, trueY(center.y)-2.5, 5, 5);
+            // canvas.fill();
+
+
+          }
         }
         canvas.stroke();
         canvas.closePath();
-      //   majorAxis = this.majorAxis,
-      //   inclinaison = this.inclinaison,
-      //   eccentricity = this.eccentricity,
-      //   omega = Math.radians(this.omega),
-      //   excDist = majorAxis - ( ( 1 - eccentricity ) * majorAxis);
-      //   // Mm = Math.sqrt(Math.pow(majorAxis,3)/GM),
-      //   this.offset = {
-      //     x: excDist * Math.cos(omega),
-      //     y: excDist * Math.sin(omega)
-      //   };
-      //   this.minorAxis = Math.sqrt((1 - Math.pow(eccentricity,2)) * Math.pow(majorAxis, 2));
-      //
-      // canvas.beginPath();
-			// if (this.strokeWidth > 0) {
-			// 	canvas.strokeStyle = this.strokeColor;
-			// 	canvas.lineWidth = this.strokeWidth;
-      //   // for(var i = 0; i < 200; i++){
-      //   //    var point = calculPosition(Math.radians(i), majorAxis, 90, eccentricity, Mm );
-      //   //    canvas.lineTo(point.x, point.y);
-      //   // }
-      //   canvas.ellipse(origin.x + this.offset.x, origin.y + this.offset.y, majorAxis, this.minorAxis, omega, 0, 2 * Math.PI);
-			// }
-      // canvas.stroke();
-			// canvas.closePath();
+
     }
   },settings);
 };
@@ -158,7 +209,7 @@ var branche = function (settings, core){
     		animationStade: 100
     	   }, {
     		easing: "ease-out-elastic",
-        duration: 500
+        duration: 200
     	});
     }
   },settings);
