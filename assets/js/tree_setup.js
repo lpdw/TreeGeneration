@@ -11,12 +11,12 @@ oCanvas.domReady(function () {
   });
 
   HTMLbutton.addEventListener("click", function(e){
-
-    var prevpoint = sousbranche.points[sousbranche.points.length - 1];
     var newPoint = {
-      x: prevpoint.x + 5 * Math.random(),
-      y: prevpoint.y + 11 * Math.random()
+      x: -5 * (Math.random() + .5),
+      y: -11 * (Math.random() + .5)
     };
+
+    sousbranche.addPoint(newPoint);
 
     var ellipse = tree.display.ellipse({
       x: newPoint.x,
@@ -28,7 +28,7 @@ oCanvas.domReady(function () {
     tree.addChild(ellipse);
 
     // ellipse.fadeIn("short", "ease-in-out-cubic", function () { });
-    sousbranche.addPoint(newPoint);
+
     setTimeout(function(){
       ellipse.fadeOut("short", "ease-in-out-cubic", function () { });
     }, 500);
@@ -98,10 +98,10 @@ oCanvas.domReady(function () {
     strokeWidth:2,
     strokeColor:"purple",
     startPoint: 40,
-    size:15,
-    angle:250,
+    size:11,
+    angle:210,
     shape: "triangle",
-    shapeFill: false
+    shapeFill: true
   });
 
   sousbranche.addChild(nleaftriangle);
