@@ -23,6 +23,22 @@ function drawPoly(ctx, start, sides, angle, size){
     ctx.lineTo( center.x + ( size * Math.cos(angle + a*i)), trueY(center.y + ( size * Math.sin(angle + a*i))));
   }
 }
+function drawArrow(ctx, start, end, headlen){
+  var angle = Math.atan2(start.y-end.y,start.x-end.x);
+  ctx.moveTo(end.x-headlen*Math.cos(angle-Math.PI/7),trueY(end.y-headlen*Math.sin(angle-Math.PI/7)));
+  ctx.lineTo(end.x, trueY(end.y));
+  ctx.lineTo(end.x-headlen*Math.cos(angle+Math.PI/7),trueY(end.y-headlen*Math.sin(angle+Math.PI/7)));
+}
+
+var cyan = 'hsl(187, 47%, 55%)',
+blue = 'hsl(207, 82%, 66%)',
+purple = 'hsl(286, 90%, 47%)',
+green = 'hsl(95, 68%, 62%)',
+red1 = 'hsl(355, 75%, 55%)',
+red2 = 'hsl(5, 48%, 51%)',
+orange1 = 'hsl(29, 84%, 61%)',
+orange2 = 'hsl(39, 67%, 69%)',
+black = 'hsl(220,13%,18%)';
 /* Parametres :
 Feuilles : origin,
         : couleur
@@ -77,12 +93,11 @@ var leaf = function (settings, core){
 
         if(this.shape === "square"){
             //
-            //var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
+            var center = {x: end_line.x + (size/2 * Math.cos(angle)), y: end_line.y + (size/2 * Math.sin(angle)) };
             //canvas.rect(center.x- (size), trueY(center.y)- (size), size*2, size*2);
-            var end_line = {x: this.originPoint.x + (size * 2.5 * Math.cos(angle)),
-                            y: this.originPoint.y + (size * 2.5 * Math.sin(angle)) };
 
-            drawPoly(canvas,end_line,4,angle,size);
+
+            drawPoly(canvas,center,4,angle,size);
             canvas.stroke();
 
             if(this.shapeFill) {
@@ -90,16 +105,16 @@ var leaf = function (settings, core){
               canvas.closePath();
               canvas.beginPath();
               canvas.lineWidth = 0;
-              end_line.x += size/3.5 * Math.cos(angle);
-              end_line.y += size/3.5 * Math.sin(angle);
-              drawPoly(canvas,end_line,4,angle,size/2);
+              center.x += size/3.5 * Math.cos(angle);
+              center.y += size/3.5 * Math.sin(angle);
+              drawPoly(canvas,center,4,angle,size/2);
               canvas.fill();
 
             }
             //canvas.setTransform(1, 0, 0, 1, 0, 0);
         }
         else if(this.shape === "circle") {
-          //var radius = size * 2;
+          // size = size/2;
           var center = {x: end_line.x + (size * Math.cos(angle)), y: end_line.y + (size * Math.sin(angle)) };
           canvas.arc(center.x, trueY(center.y), size, 0, Math.PI * 2, false);
           if(this.shapeFill){
@@ -158,12 +173,10 @@ var branche = function (settings, core){
         canvas.lineJoin = this.join;
         canvas.lineCap = this.cap;
 
-
         if (this.parent.points != undefined && settings.startPoint && !this.isInit){
           this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
           var origin = this.originPoint;
           this.points = settings.points.map(function(point){
-            //console.log(point);
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
 
@@ -183,31 +196,51 @@ var branche = function (settings, core){
             canvas.lineTo(lastpoint.x,trueY(lastpoint.y));
             continue;
           }
+          if(i%5 == 0 && i!=0){
+            canvas.stroke();
+            canvas.closePath();
+            canvas.beginPath();
+            canvas.lineWidth = canvas.lineWidth * 0.7;
+            canvas.moveTo(points[i-1].x, trueY(points[i-1].y))
+          }
           canvas.lineTo(points[i].x, trueY(points[i].y));
         }
         canvas.stroke();
         canvas.closePath();
         if(progress != 1){
-          canvas.beginPath();
-          canvas.lineWidth = this.strokeWidth + 1.5 * (1 - progress);
+
+          canvas.lineWidth = this.strokeWidth * (1 - progress);
           canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
-          canvas.moveTo(lastpoint.x, trueY(lastpoint.y));
+          //canvas.moveTo(lastpoint.x, trueY(lastpoint.y));
           var invProgress = 1 - progress;
-          progress = progress == 0 ? 0.0001 : progress;
-          for (i=0; i<= 300 * invProgress; i++) {
+          //progress = progress == 0 ? 0.0001 : progress;
+          var max = Math.floor(280 * invProgress);
+          var first_point;
+          var start = max > 40 ? max - 40 : 0;
+          canvas.beginPath();
+          for (i = start; i<= max; i++) {
             var angle =  0.1 * Math.pow(i,(1 - progress));
             //var angle =  Math.pow(i,i / 100);
 
-             x=lastpoint.x + (1*i+angle + ( invProgress * 10))*Math.cos(angle);
-             y=lastpoint.y + (1*i+angle + ( invProgress * 10))*Math.sin(angle);
-             if(i == 0 )
-                canvas.moveTo(x, trueY(y));
-            else if(i == Math.floor(300 *invProgress))
-              drawPoly(canvas,{x:x + invProgress * 25 * Math.cos(angle),
-                               y:y + invProgress * 25 * Math.sin(angle)},4,
-                                angle, invProgress * 50);
-            else
-                canvas.lineTo(x, trueY(y));
+             x=lastpoint.x + (1*i+angle + ( invProgress * 5))*Math.cos(angle);
+             y=lastpoint.y + (1*i+angle + ( invProgress * 5))*Math.sin(angle);
+            if(i == start ){
+                //canvas.moveTo(x, trueY(y));
+                first_point = {x:x,y:y};
+                continue;
+            }
+            else if(i == start+1){
+
+              drawArrow(canvas,first_point,{x:x,y:y},30*invProgress);
+              canvas.stroke();
+              canvas.closePath();
+              canvas.beginPath();
+              canvas.moveTo(x, trueY(y));
+              continue;
+              // canvas.lineTo(first_point.x,trueY(first_point.y));
+              // canvas.lineTo(x,trueY(y));
+            }
+            canvas.lineTo(x,trueY(y));
            }
 
            canvas.stroke();
@@ -220,7 +253,7 @@ var branche = function (settings, core){
 
         return this;
     },
-    addPoint(point){
+    addPoint(point, animate = true){
       // check if the origin point was previously use and use it to compute the absolute path
       if (this.points != undefined){
         point.x += this.points[this.points.length - 1].x;
@@ -230,6 +263,8 @@ var branche = function (settings, core){
       //push the new point to array
       this.points.push(point);
       // set animation stade to zéro
+      if(!animate)
+        return;
       this.animationStade = 0,
       this.animate({
     		animationStade: 100

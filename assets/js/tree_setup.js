@@ -7,13 +7,13 @@ oCanvas.domReady(function () {
 
   var tree = oCanvas.create({
   	canvas: "#tree",
-  	background: "transparent"
+  	background: black
   });
 
   HTMLbutton.addEventListener("click", function(e){
     var newPoint = {
-      x: -5 * (Math.random() + .5),
-      y: -11 * (Math.random() + .5)
+      x: 5 * (Math.random() + .5),
+      y: 1 * (Math.random() + .5)
     };
 
     sousbranche.addPoint(newPoint);
@@ -47,22 +47,24 @@ oCanvas.domReady(function () {
     {x:tree.width/2 + 1,y:140} ,{x:tree.width/2 - 10,y:170},
         {x:tree.width/2 - 4,y:220}, {x:tree.width/2 + 1,y:250},
     {x:tree.width/2 + 1,y:280}];
-  var sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
+  var sous_points = [{x:0,y:0}, {x:5,y:0}, {x:7,y:0}, {x:9,y:2}, {x:11,y:2}, {x:15,y:2}, {x:17,y:4}, {x:19,y:4}, {x:21,y:4}, {x:24,y:4}, {x:25,y:4}, {x:28,y:4}];
   var sous_sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
 
 
   var branche = tree.display.branche({
                             points: points,
-                            strokeWidth: 8,
-                            strokeColor: "black",
+                            strokeWidth: 15,
+                            strokeColor: "white",
                             join: "round",
                             cap: "round",
                             animationStade: 100}).add();
   var sousbranche = tree.display.branche({
-    strokeWidth:2,
-    strokeColor:"black",
+    strokeWidth:15,
+    strokeColor: orange1,
     points: sous_points,
-    startPoint: 90
+    startPoint: 90,
+    join:"round",
+    cap:"round"
   });
   branche.addChild(sousbranche);
   var soussousbranche = tree.display.branche({
@@ -74,9 +76,9 @@ oCanvas.domReady(function () {
 
   var nleaf = tree.display.leaf({
     strokeWidth:2,
-    strokeColor:"green",
+    strokeColor:green,
     startPoint: 90,
-    size:6,
+    size:10,
     angle:270,
     shape: "circle",
     shapeFill: true
@@ -85,27 +87,30 @@ oCanvas.domReady(function () {
 
   var nleafsquare = tree.display.leaf({
     strokeWidth:2,
-    strokeColor:"red",
+    strokeColor:red1,
     startPoint: 20,
-    size:15,
+    size:10,
     angle:60,
     shape: "square",
     shapeFill: true
   });
-  sousbranche.addChild(nleafsquare);
+  branche.addChild(nleafsquare);
 
   var nleaftriangle = tree.display.leaf({
     strokeWidth:2,
-    strokeColor:"purple",
+    strokeColor:purple,
     startPoint: 40,
-    size:11,
+    size:10,
     angle:210,
     shape: "triangle",
     shapeFill: true
   });
 
-  sousbranche.addChild(nleaftriangle);
-  branche.points.push({x:tree.width/2 + 1,y:420})
+  branche.addChild(nleaftriangle);
+  branche.addPoint({x:0 + 1,y:15});
+  branche.addPoint({x:0 + 1,y:15});
+  branche.addPoint({x:0 + 1,y:15});
+  branche.addPoint({x:0 + 1,y:15});
 
   //sousbranche.addChild(soussousbranche);
   //branche.points.push({x:tree.width/2 + 1,y:420})
