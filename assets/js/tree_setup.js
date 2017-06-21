@@ -52,20 +52,20 @@ oCanvas.domReady(function () {
 
     sousbranche.addPoint(newPoint);
 
-    var ellipse = tree.display.ellipse({
-      x: newPoint.x,
-      y: trueY(newPoint.y),
-      radius: 15,
-      fill: "radial-gradient(#8ec2e2, rgba(255, 255, 255, 0))",
-      opacity: 0.5
-    });
-    tree.addChild(ellipse);
+    // var ellipse = tree.display.ellipse({
+    //   x: newPoint.x,
+    //   y: trueY(newPoint.y),
+    //   radius: 15,
+    //   fill: "radial-gradient(#8ec2e2, rgba(255, 255, 255, 0))",
+    //   opacity: 0.5
+    // });
+    //tree.addChild(ellipse);
 
     // ellipse.fadeIn("short", "ease-in-out-cubic", function () { });
 
-    setTimeout(function(){
-      ellipse.fadeOut("short", "ease-in-out-cubic", function () { });
-    }, 500);
+    // setTimeout(function(){
+    //   ellipse.fadeOut("short", "ease-in-out-cubic", function () { });
+    // }, 500);
 
   });
   window.onresize = function(event) {
@@ -84,18 +84,25 @@ oCanvas.domReady(function () {
     var rel_points = [];
     var sous_points = [];
     var sous_sous_points = [];
+    rel_points[0] = {x: 250, y:0};
+    for(var i= 1; i<1200; i++){
+      var tot = Math.random() * (150 - 80) + 80;
+      rel_points[i] = {x: Math.cos(i/tot)/5,
+                        y: .4 };
+    }
+    sous_points[0] = {x:0, y:0};
+    for(var i= 1; i<600; i++){
+      var tot = Math.random() * (100 - 30) + 30;
+      sous_points[i] = {x: Math.sin(i/tot)/10,
+                        y: i /1200 };
+    }
+    var sous_points_ = sous_points;
+    sous_sous_points[0] = {x:0, y:0};
+    for(var i= 1; i<400; i++){
+      var tot = Math.random() * (20 - 10) + 10;
 
-    for(var i= 0; i<70; i++){
-      rel_points[i] = {x: .5 + Math.cos(i) * 1.1,
-                        y: .5 + Math.cos(i) * 1.1 };
-    }
-    for(var i= 0; i<40; i++){
-      sous_points[i] = {x: 1 + Math.sin(i),
-                        y: 1 + Math.sin(i) };
-    }
-    for(var i= 0; i<30; i++){
-      sous_points[i] = {x: 0.5 + Math.cos(i),
-                        y: .4 + Math.sin(i) };
+      sous_sous_points[i] = {x: -Math.sin(i/tot)/2 - 0.5,
+                        y: 0.1 };
     }
   // var sous_points = [{x:0,y:0}, {x:5,y:0}, {x:7,y:0}, {x:9,y:2}, {x:11,y:2}, {x:15,y:2}, {x:17,y:4}, {x:19,y:4}, {x:21,y:4}, {x:24,y:4}, {x:25,y:4}, {x:28,y:4}];
   // var sous_sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
@@ -111,46 +118,58 @@ oCanvas.domReady(function () {
     strokeWidth:15,
     strokeColor: orange1,
     points: sous_points,
-    startPoint: 90,
+    startPoint: 20,
+    join:"round",
+    cap:"round"
+  });
+  var sssousbranche = tree.display.branche({
+    strokeWidth:20,
+    strokeColor: purple,
+    points: sous_sous_points,
+    startPoint: 70,
     join:"round",
     cap:"round"
   });
   branche.addChild(sousbranche);
+  branche.addChild(sssousbranche);
   var soussousbranche = tree.display.branche({
     strokeWidth:15,
     strokeColor:orange2,
-    points: sous_sous_points,
-    startPoint: 100
+    points: sous_points_,
+    startPoint: 40,
+    join:"round",
+    cap:"round"
   });
+  sousbranche.addChild(soussousbranche);
 
   var nleaf = tree.display.leaf({
-    strokeWidth:2,
+    strokeWidth:5,
     strokeColor:green,
     startPoint: 90,
-    size:10,
-    angle:270,
+    size:20,
+    angle:90,
     shape: "circle",
     shapeFill: true
   });
-  sousbranche.addChild(nleaf);
+  sssousbranche.addChild(nleaf);
 
   var nleafsquare = tree.display.leaf({
-    strokeWidth:2,
+    strokeWidth:4,
     strokeColor:red1,
     startPoint: 20,
-    size:10,
-    angle:60,
+    size:50,
+    angle:0,
     shape: "square",
     shapeFill: true
   });
   branche.addChild(nleafsquare);
 
   var nleaftriangle = tree.display.leaf({
-    strokeWidth:2,
+    strokeWidth:5,
     strokeColor:purple,
     startPoint: 40,
-    size:10,
-    angle:210,
+    size:120,
+    angle:180,
     shape: "triangle",
     shapeFill: true
   });
@@ -176,12 +195,16 @@ oCanvas.domReady(function () {
   // algo.generate(tree);
   // var i = 0;
   // tree.setLoop(function () {
-  //   nleaf.angle = nleaf.angle > 180 ? nleaf.angle + ( (Math.cos(i)- 0.5) * 5) : nleaf.angle - ( (Math.cos(i)- 0.5) * 5);
-  //   nleafsquare.angle = nleafsquare.angle > 180 ? nleafsquare.angle + ( (Math.cos(i)- 0.5) * 5) : nleafsquare.angle - ( (Math.cos(i)- 0.5) * 5);
-  //   nleaftriangle.angle = nleaftriangle.angle > 180 ? nleaftriangle.angle + ( (Math.cos(i)- 0.5) * 5) : nleaftriangle.angle - ( (Math.cos(i)- 0.5) * 5);
-  //   i = i > 10 ? 0 : i +0.01 ;
+  //   nleaf.leafRotation = i;
+  //   nleaf.angle = i;
+  //   nleafsquare.leafRotation =  i;
+  //   nleafsquare.angle =  i;
+  //   nleaftriangle.leafRotation = i;
+  //   nleaftriangle.angle = i;
+  //   i = i > 360 ? 0 : i+1;
+  //   console.log(i);
   // });
-  //tree.timeline.start();
+  // tree.timeline.start();
   // var algo_tree = algo(tree);
 
 });
