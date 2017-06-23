@@ -9,7 +9,7 @@ body{
   left: 40%;
   z-index: 50;
 }
-#button{
+div.button{
   position: absolute;
   z-index: 99;
 }

@@ -33,11 +33,16 @@ var words = {
 
 
 oCanvas.domReady(function () {
-  var HTMLcanvas = document.getElementById("tree");
-  var HTMLbutton = document.getElementById("button");
+  var HTMLcanvas = document.getElementById("tree"),
+  HTMLbutton = document.getElementById("button"),
+  HTMLzoombutton = document.getElementById("zoom"),
+  HTMLdezoombutton = document.getElementById("dezoom"),
+  HTMLleafbutton = document.getElementById("leaf");
+  var branches = [];
+
   HTMLcanvas.height = window.innerHeight;
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
-
+  oCanvas.Zoom.Init(HTMLcanvas, 1000);
 
   var tree = oCanvas.create({
   	canvas: "#tree",
@@ -45,12 +50,12 @@ oCanvas.domReady(function () {
   });
 
   HTMLbutton.addEventListener("click", function(e){
+    var branche = branches[Math.arrayRand(branches.length)];
     var newPoint = {
-      x: 5 * (Math.random() + .5),
-      y: 1 * (Math.random() + .5)
+      x: Math.cos(branche.points.length/80)/4,
+      y: 5
     };
-
-    sousbranche.addPoint(newPoint);
+    branche.addPoint(newPoint);
 
     // var ellipse = tree.display.ellipse({
     //   x: newPoint.x,
@@ -73,109 +78,197 @@ oCanvas.domReady(function () {
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
     tree.redraw();
   };
+  HTMLzoombutton.addEventListener("click",function(){
+      oCanvas.Zoom.setLevel(oCanvas.Zoom.level - 50);
+      tree.redraw();
+  })
+  HTMLdezoombutton.addEventListener("click",function(){
+      oCanvas.Zoom.setLevel(oCanvas.Zoom.level + 50);
+      tree.redraw();
+  })
+  HTMLleafbutton.addEventListener("click", function(){
+    generateLeaf();
+  })
   //var title = tree.display.text({size: 40, x:HTMLcanvas.width/2,origin:{x:"center"},fill: "#222", text:"MotherF***ing Tree"}).add();
-
-
   // var points = [{x:tree.width/2,y:0}, {x:tree.width/2 + 2,y:50},
   //   {x:tree.width/2 - 4,y:70}, {x:tree.width/2 + 1,y:110},
   //   {x:tree.width/2 + 1,y:140} ,{x:tree.width/2 - 10,y:170},
   //       {x:tree.width/2 - 4,y:220}, {x:tree.width/2 + 1,y:250},
   //   {x:tree.width/2 + 1,y:280}];
-    var rel_points = [];
-    var sous_points = [];
-    var sous_sous_points = [];
-    rel_points[0] = {x: 250, y:0};
-    for(var i= 1; i<1200; i++){
-      var tot = Math.random() * (150 - 80) + 80;
-      rel_points[i] = {x: Math.cos(i/tot)/5,
-                        y: .4 };
-    }
-    sous_points[0] = {x:0, y:0};
-    for(var i= 1; i<600; i++){
-      var tot = Math.random() * (100 - 30) + 30;
-      sous_points[i] = {x: Math.sin(i/tot)/10,
-                        y: i /1200 };
-    }
-    var sous_points_ = sous_points;
-    sous_sous_points[0] = {x:0, y:0};
-    for(var i= 1; i<400; i++){
-      var tot = Math.random() * (20 - 10) + 10;
+    // var points = [];
+    // points[0] = {x: 250, y:0};
+    // for(var i= 1; i<1000; i++){
+    //   var tot = Math.random() * (150 - 80) + 80;
+    //   points[i] = {x: Math.cos(i/tot)/5,
+    //                     y: .4 };
+    // }
+    //
+    // branches[0] = tree.display.branche({
+    //                           trunk: true,
+    //                           points: points,
+    //                           strokeWidth: 100,
+    //                           strokeColor: "white",
+    //                           join: "round",
+    //                           cap: "round",
+    //                           animationStade: 100}).add();
+    // //branches.push(branche);
+    // points = [];
+    // points[0] = {x:0, y:0};
+    // for(var i= 1; i<600; i++){
+    //   var tot = Math.random() * (100 - 30) + 30;
+    //   points[i] = {x: Math.sin(i/tot),
+    //                     y: 1 };
+    // }
+    //
+    // branches[1] = tree.display.branche({
+    //   strokeWidth:100,
+    //   strokeColor: orange1,
+    //   points: points,
+    //   startPoint: 20,
+    //   join:"round",
+    //   cap:"round"
+    // });
+    // branches[0].addChild(branches[1]);
+    //
+    //
+    // points = [];
+    // points[0] = {x:0, y:0};
+    // for(var i= 1; i<400; i++){
+    //   var tot = Math.random() * (20 - 10) + 10;
+    //
+    //   points[i] = {x: -Math.sin(i/tot)/2 - 0.5,
+    //                     y: 0.1 };
+    // }
+    //
+    // branches[2] = tree.display.branche({
+    //   strokeWidth:100,
+    //   strokeColor: purple,
+    //   points: points,
+    //   startPoint: 70,
+    //   join:"round",
+    //   cap:"round"
+    // });
+    // branches[1].addChild(branches[2]);
 
-      sous_sous_points[i] = {x: -Math.sin(i/tot)/2 - 0.5,
-                        y: 0.1 };
+    for(var i = 0; i<20 ; i++){
+      var invI = 1 - i/19;
+      var points = [];
+      if (i == 0){
+        points[0] = {x: 250, y:0};
+      }
+      else{
+        points[0] = {x:0, y:0};
+      }
+      var func = Math.random() > .5 ? Math.cos : Math.sin;
+      var freq = Math.rand((100 * invI) + 10, (200 * invI) + 11);
+      var amplitude  = Math.rand(1,4);
+      var y = invI * 1 + 1;
+      var f = i%2 == 0 ? 3 : -3;
+      for (var j = 1; j< Math.floor(Math.rand(50*invI + 200, 150*invI+500)); j++){
+        points[j] = {x: f * func(j/freq)/amplitude,
+                          y: y + Math.rand(-0.2, 0.2) };
+      }
+      var branche = tree.display.branche({
+        strokeWidth:Math.rand(40*invI + 20,80*invI + 40),
+        strokeColor: i == 0 ? white : colors[Math.arrayRand(colors.length)],
+        points: points,
+        startPoint: Math.rand(2,80),
+        join:"round",
+        cap:"round",
+        trunk: i === 0 ? true :false,
+      });
+      if( i === 0 )
+        branche.add();
+      else
+        branches[Math.arrayRand(branches.length)].addChild(branche);
+      branches.push(branche);
+      tree.redraw();
+      // console.log(branches);
     }
+
+    // sous_sous_points[0] = {x:0, y:0};
+    // for(var i= 1; i<400; i++){
+    //   var tot = Math.random() * (20 - 10) + 10;
+    //
+    //   sous_sous_points[i] = {x: -Math.sin(i/tot)/2 - 0.5,
+    //                     y: 0.1 };
+    // }
   // var sous_points = [{x:0,y:0}, {x:5,y:0}, {x:7,y:0}, {x:9,y:2}, {x:11,y:2}, {x:15,y:2}, {x:17,y:4}, {x:19,y:4}, {x:21,y:4}, {x:24,y:4}, {x:25,y:4}, {x:28,y:4}];
   // var sous_sous_points = [{x:0,y:0}, {x:10,y:0}, {x:35,y:0}, {x:40,y:20}, {x:70,y:25}];
 
-  var branche = tree.display.branche({
-                            points: rel_points,
-                            strokeWidth: 15,
-                            strokeColor: "white",
-                            join: "round",
-                            cap: "round",
-                            animationStade: 100}).add();
-  var sousbranche = tree.display.branche({
-    strokeWidth:15,
-    strokeColor: orange1,
-    points: sous_points,
-    startPoint: 20,
-    join:"round",
-    cap:"round"
-  });
-  var sssousbranche = tree.display.branche({
-    strokeWidth:20,
-    strokeColor: purple,
-    points: sous_sous_points,
-    startPoint: 70,
-    join:"round",
-    cap:"round"
-  });
-  branche.addChild(sousbranche);
-  branche.addChild(sssousbranche);
-  var soussousbranche = tree.display.branche({
-    strokeWidth:15,
-    strokeColor:orange2,
-    points: sous_points_,
-    startPoint: 40,
-    join:"round",
-    cap:"round"
-  });
-  sousbranche.addChild(soussousbranche);
 
-  var nleaf = tree.display.leaf({
-    strokeWidth:5,
-    strokeColor:green,
-    startPoint: 90,
-    size:20,
-    angle:90,
-    shape: "circle",
-    shapeFill: true
-  });
-  sssousbranche.addChild(nleaf);
+  // var sousbranche = tree.display.branche({
+  //   strokeWidth:100,
+  //   strokeColor: orange1,
+  //   points: sous_points,
+  //   startPoint: 20,
+  //   join:"round",
+  //   cap:"round"
+  // });
+  // var sssousbranche = tree.display.branche({
+  //   strokeWidth:100,
+  //   strokeColor: purple,
+  //   points: sous_sous_points,
+  //   startPoint: 70,
+  //   join:"round",
+  //   cap:"round"
+  // });
+  // branche.addChild(sousbranche);
+  // sousbranche.addChild(sssousbranche);
 
-  var nleafsquare = tree.display.leaf({
-    strokeWidth:4,
-    strokeColor:red1,
-    startPoint: 20,
-    size:50,
-    angle:0,
-    shape: "square",
-    shapeFill: true
-  });
-  branche.addChild(nleafsquare);
 
-  var nleaftriangle = tree.display.leaf({
-    strokeWidth:5,
-    strokeColor:purple,
-    startPoint: 40,
-    size:120,
-    angle:180,
-    shape: "triangle",
-    shapeFill: true
-  });
+  // var nleaf = tree.display.leaf({
+  //   strokeWidth:5,
+  //   strokeColor:green,
+  //   startPoint: 90,
+  //   size:30,
+  //   angle:90,
+  //   shape: "circle",
+  //   shapeFill: true
+  // });
+  // sssousbranche.addChild(nleaf);
+  //
+  // var nleafsquare = tree.display.leaf({
+  //   strokeWidth:4,
+  //   strokeColor:red1,
+  //   startPoint: 20,
+  //   size:50,
+  //   angle:0,
+  //   shape: "square",
+  //   shapeFill: true
+  // });
+  // sousbranche.addChild(nleafsquare);
+  //
+  // var nleaftriangle = tree.display.leaf({
+  //   strokeWidth:5,
+  //   strokeColor:purple,
+  //   startPoint: 40,
+  //   size:120,
+  //   angle:180,
+  //   shape: "triangle",
+  //   shapeFill: true
+  // });
+  // sousbranche.addChild(nleaftriangle);
+  function generateLeaf(){
 
-  branche.addChild(nleaftriangle);
-  branche.addPoint({x:0 + 1,y:2});
+    for (var i = 0; i<50; i++){
+      var leaf = tree.display.leaf({
+        strokeWidth:Math.rand(1,4),
+        strokeColor:colors[Math.arrayRand(colors.length)],
+        startPoint: Math.rand(10,80),
+        size:Math.rand(10,30),
+        angle:Math.rand(0, 360),
+        shape: shapes[Math.arrayRand(shapes.length)],
+        shapeFill: Math.round(Math.random())
+      });
+    branches[Math.arrayRand(branches.length)].addChild(leaf);
+    }
+
+  }
+
+
+  // sousbranche.addChild(nleaftriangle);
+  //branche.addPoint({x:0 + 1,y:2});
 
   //sousbranche.addChild(soussousbranche);
   //branche.points.push({x:tree.width/2 + 1,y:420})

@@ -1,10 +1,51 @@
-Zoom
 /********************** global functions *******/
 Math.radians = function(degrees) {
   return degrees * Math.PI / 180;
 };
-var Zoom = 500;
+Math.rand = function(min,max){
+  return Math.random() * (max - min) + min;
+}
+Math.arrayRand = function(max){
+  return Math.floor(Math.random() * max);
+}
+// var Zoom =
+oCanvas.Zoom = {
+  zoomed:false,
+  offset:0,
+  Init: function(canvas, level){
+    this.canvas = canvas;
+    this.setLevel(level);
+  },
+  setLevel: function(newLevel){
+    this.x = newLevel * this.canvas.width / this.canvas.height;
+    this.y = newLevel;
+    this.level = newLevel;
+    this.zoomed = true;
+  },
+  setOffset: function(x){
+    this.offset = this.x/2 - x;
+  },
+  convert: function(value){
+    return (value / this.level) * this.canvas.height;
+  }
 
+};
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
+// var ZoomX = 500;
+// var ZoomY = ZoomX * (document.getElementById("tree").width / document.getElementById("tree").height);
+// oCanvas.domReady(function () {
+//   var ZoomY = 500;
+//   var ZoomX = ZoomX / (document.getElementById("tree").width / document.getElementById("tree").height);
+// }
 function sleep(miliseconds) {
    var currentTime = new Date().getTime();
 
@@ -36,15 +77,17 @@ function Point(x = 0, y = 0){
   this.y = y;
 }
 Point.prototype.drawX = function(xoffset = 0){
-  return ( (this.x + xoffset) / Zoom) * document.getElementById("tree").width;
+  return ((this.x + xoffset) / oCanvas.Zoom.x) * document.getElementById("tree").width;
 }
 Point.prototype.drawY = function(yoffset = 0){
-  return document.getElementById("tree").height - (( (this.y + yoffset) / Zoom) * document.getElementById("tree").height );
+  return document.getElementById("tree").height - (( (this.y + yoffset) / oCanvas.Zoom.y) * document.getElementById("tree").height );
+  // return ((this.y + yoffset) / Zoom) * document.getElementById("tree").height ;
 }
 Point.prototype.set = function(point){
   this.x = point.x;
   this.y = point.y;
 }
+
 var cyan = 'hsl(187, 47%, 55%)',
 blue = 'hsl(207, 82%, 66%)',
 purple = 'hsl(286, 90%, 47%)',
@@ -53,7 +96,10 @@ red1 = 'hsl(355, 75%, 55%)',
 red2 = 'hsl(5, 48%, 51%)',
 orange1 = 'hsl(29, 84%, 61%)',
 orange2 = 'hsl(39, 90%, 69%)',
+white = 'hsl(255, 85%, 98%)',
 black = 'hsl(220,13%,18%)';
+var colors = [cyan, blue, purple, green, red1, red2, orange1, orange2, white];
+var shapes = ["triangle", "square", "circle"];
 /* Parametres :
 Feuilles : origin,
         : couleur
@@ -80,15 +126,14 @@ var leaf = function (settings, core){
     angle:90,
     leafRotation:0,
     init: function(){
-      this.size = settings.size / (Zoom/250);
-      this.strokeWidth = settings.strokeWidth / (Zoom/250);
     },
     draw: function(){
       var canvas = this.core.canvas,
         origin = this.getOrigin(),
         size = this.size,
         angle = Math.radians(this.angle),
-        leafRotation = Math.radians(this.leafRotation);
+        leafRotation = Math.radians(this.leafRotation)
+        strokeWidth = this.strokeWidth ;
 
 
         if (this.parent.points != undefined && settings.startPoint && !this.isInit){
@@ -96,7 +141,7 @@ var leaf = function (settings, core){
           this.isInit = true;
         }
         canvas.beginPath();
-        canvas.lineWidth = this.strokeWidth;
+        canvas.lineWidth = strokeWidth;
         canvas.strokeStyle = this.strokeColor;
         canvas.fillStyle = this.strokeColor;
         canvas.lineJoin = this.join;
@@ -135,7 +180,7 @@ var leaf = function (settings, core){
           // size = size/2;
 
           var center = new Point(end_line.x + (size * Math.cos(angle)), end_line.y + (size * Math.sin(angle)) );
-          canvas.arc(center.drawX(), center.drawY(), size, 0, Math.PI * 2, false);
+          canvas.arc(center.drawX(), center.drawY(), oCanvas.Zoom.convert(size), 0, Math.PI * 2, false);
           if(this.shapeFill){
             canvas.stroke();
             canvas.closePath();
@@ -143,7 +188,7 @@ var leaf = function (settings, core){
 
             canvas.lineWidth = 0;
 
-            canvas.arc(center.drawX(), center.drawY(), size / 4, 0, Math.PI * 2, false);
+            canvas.arc(center.drawX(), center.drawY(), oCanvas.Zoom.convert(size / 4), 0, Math.PI * 2, false);
             canvas.fill();
           }
 
@@ -182,6 +227,7 @@ var branche = function (settings, core){
     isInit: false,
     join: "square",
     originPoint:undefined,
+    trunk: false,
     init: function(){
       if(settings.points != undefined){
         for(var i = 1;i<settings.points.length;i++){
@@ -189,7 +235,7 @@ var branche = function (settings, core){
           settings.points[i].y = settings.points[i-1].y + settings.points[i].y;
         }
       }
-      this.strokeWidth = settings.strokeWidth / (Zoom/100);
+      this.strokeWidth = settings.strokeWidth / (oCanvas.Zoom.level/100);
     },
     draw: function(){
       var canvas = this.core.canvas;
@@ -199,6 +245,7 @@ var branche = function (settings, core){
         canvas.lineJoin = this.join;
         canvas.lineCap = this.cap;
 
+
         if (this.parent.points != undefined && settings.startPoint && !this.isInit){
           this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
           var origin = this.originPoint;
@@ -207,16 +254,25 @@ var branche = function (settings, core){
           });
           this.isInit = true;
         }
+        if(oCanvas.Zoom.zoomed){
+          if(this.trunk){
+            oCanvas.Zoom.setOffset(this.points[0].x);
+          }
+          var offset = oCanvas.Zoom.offset;
+          for(var i = 0;i<this.points.length;i++){
+            this.points[i].x = this.points[i].x + offset;
+          }
+        }
 
         if(this.points == null )
           return;
         points = this.points;
+
         var progress = this.animationStade / 100;
         var lastPoint = new Point(points[points.length - 1].x,points[points.length - 1].y) ;
         var currentPoint = new Point();
         var prevPoint = new Point();
         for(var i = 0; i < points.length; i++){
-
           if(i == points.length - 1 && progress != 1){
             // Anime la dernière partie du chemin, selon le paramètre progress
             lastPoint.x =  points[i - 1].x + ((points[i].x - points[i - 1].x) * progress);
@@ -238,15 +294,29 @@ var branche = function (settings, core){
         canvas.stroke();
         canvas.closePath();
         if(progress != 1){
-
-          canvas.beginPath();
-          canvas.lineWidth = this.strokeWidth * (1 - progress);
-          canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
           var invProgress = 1 - progress;
+          canvas.beginPath();
+          var size = (Math.sin(invProgress*20) + 1) * (40*invProgress + 10);
+          var grd = canvas.createRadialGradient(
+                              lastPoint.drawX(),
+                              lastPoint.drawY(),
+                              oCanvas.Zoom.convert(size/10),
+                              lastPoint.drawX(),
+                              lastPoint.drawY(),
+                              oCanvas.Zoom.convert(size));
+          grd.addColorStop(0,"transparent");
+          grd.addColorStop(1,"white");
+          canvas.fillStyle = grd;
+          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size), 0, Math.PI * 2, false);
+          canvas.fill();
+          canvas.closePath();
+          canvas.beginPath();
+          canvas.lineWidth = this.lineWidth * (1 - progress);
+          canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
           //progress = progress == 0 ? 0.0001 : progress;
           var max = Math.floor(150 * invProgress);
           var firstPoint = new Point();
-          var start = max > 40 ? max - 40 : 0;
+          var start = max > 20 ? max - 20 : 0;
 
           for (i = start; i<= max; i++) {
             var angle =  0.1 * Math.pow(i,(1 - progress));
@@ -272,7 +342,7 @@ var branche = function (settings, core){
            canvas.stroke();
            canvas.closePath();
         }
-        //Pris de OCanvas directement
+        //Pris de oCanvas directement
         if(this.clipChildren) {
           canvas.clip();
         }
@@ -289,13 +359,13 @@ var branche = function (settings, core){
       //push the new point to array
       this.points.push(point);
       // set animation stade to zéro
-      if(!animate)
+      if(!animate || this.animationStade != 100)
         return;
       this.animationStade = 0,
       this.animate({
     		animationStade: 100
     	   }, {
-    		easing: "ease-in-quad",
+    		easing: "ease-out-quad",
         duration: 10000
     	});
     }
