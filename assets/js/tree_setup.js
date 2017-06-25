@@ -13,22 +13,16 @@ var words = {
 12: "Virtuel",
 13: "Curiosité",
 14: "Entraide",
-15: "Environnement",
-16: "Savoir-faire",
-17: "Nature",
-18: "Ludique",
-19: "Do It Yourself",
-20: "Arts",
-21: "Citoyen",
-22: "Technique",
-23: "Connecté",
-24: "Ludique",
-25: "Sensibilité",
-26: "Expérience",
-27: "Atelier",
-28: "Narration",
-29: "Savoir-être",
-30: "Outil",
+15: "Savoir-faire",
+16: "Nature",
+17: "Ludique",
+18: "Do It Yourself",
+19: "Arts",
+20: "Citoyen",
+21: "Technique",
+22: "Expérience",
+23: "Narration",
+24: "Outil",
 }
 
 
@@ -42,7 +36,7 @@ oCanvas.domReady(function () {
 
   HTMLcanvas.height = window.innerHeight;
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
-  oCanvas.Zoom.Init(HTMLcanvas, 1000);
+  oCanvas.Zoom.Init(HTMLcanvas, 200);
 
   var tree = oCanvas.create({
   	canvas: "#tree",
@@ -50,27 +44,14 @@ oCanvas.domReady(function () {
   });
 
   HTMLbutton.addEventListener("click", function(e){
-    var branche = branches[Math.arrayRand(branches.length)];
-    var newPoint = {
-      x: Math.cos(branche.points.length/80)/4,
-      y: 5
-    };
-    branche.addPoint(newPoint);
-
-    // var ellipse = tree.display.ellipse({
-    //   x: newPoint.x,
-    //   y: trueY(newPoint.y),
-    //   radius: 15,
-    //   fill: "radial-gradient(#8ec2e2, rgba(255, 255, 255, 0))",
-    //   opacity: 0.5
-    // });
-    //tree.addChild(ellipse);
-
-    // ellipse.fadeIn("short", "ease-in-out-cubic", function () { });
-
-    // setTimeout(function(){
-    //   ellipse.fadeOut("short", "ease-in-out-cubic", function () { });
-    // }, 500);
+    setTimeout(function(){
+      var branche = branches[Math.arrayRand(branches.length)];
+      var newPoint = {
+        x: 5 * Math.cos(branche.points.length / 30) / 20 + 5,
+        y: -5 * Math.sin(branche.points.length / 100) / 2 + 10
+      };
+      branche.addPoint(newPoint);
+    }, 1000);
 
   });
   window.onresize = function(event) {
@@ -150,8 +131,8 @@ oCanvas.domReady(function () {
     // });
     // branches[1].addChild(branches[2]);
 
-    for(var i = 0; i<20 ; i++){
-      var invI = 1 - i/19;
+    for(var i = 0; i<15 ; i++){
+      var invI = 1 - i/14;
       var points = [];
       if (i == 0){
         points[0] = {x: 250, y:0};
@@ -160,16 +141,16 @@ oCanvas.domReady(function () {
         points[0] = {x:0, y:0};
       }
       var func = Math.random() > .5 ? Math.cos : Math.sin;
-      var freq = Math.rand((100 * invI) + 10, (200 * invI) + 11);
+      var freq = Math.rand((20 * invI) + 10, (30 * invI) + 11);
       var amplitude  = Math.rand(1,4);
       var y = invI * 1 + 1;
       var f = i%2 == 0 ? 3 : -3;
-      for (var j = 1; j< Math.floor(Math.rand(50*invI + 200, 150*invI+500)); j++){
+      for (var j = 1; j< Math.floor(Math.rand(50*invI + 200, 150*invI+300)); j++){
         points[j] = {x: f * func(j/freq)/amplitude,
                           y: y + Math.rand(-0.2, 0.2) };
       }
       var branche = tree.display.branche({
-        strokeWidth:Math.rand(40*invI + 20,80*invI + 40),
+        strokeWidth:Math.rand(40*invI + 10,80*invI + 20),
         strokeColor: i == 0 ? white : colors[Math.arrayRand(colors.length)],
         points: points,
         startPoint: Math.rand(2,80),
@@ -251,9 +232,9 @@ oCanvas.domReady(function () {
   // sousbranche.addChild(nleaftriangle);
   function generateLeaf(){
 
-    for (var i = 0; i<50; i++){
+    // for (var i = 0; i<200; i++){
       var leaf = tree.display.leaf({
-        strokeWidth:Math.rand(1,4),
+        strokeWidth:Math.rand(1000,2000),
         strokeColor:colors[Math.arrayRand(colors.length)],
         startPoint: Math.rand(10,80),
         size:Math.rand(10,30),
@@ -262,7 +243,7 @@ oCanvas.domReady(function () {
         shapeFill: Math.round(Math.random())
       });
     branches[Math.arrayRand(branches.length)].addChild(leaf);
-    }
+    // }
 
   }
 
@@ -284,7 +265,7 @@ oCanvas.domReady(function () {
   //branche.scalingY = 0.4;
   //tree.redraw();
  // Faire touner l'algo de génération avec les nouvelles données*/
- //  algo.init(tree);
+  // algo.init(tree);
   // algo.generate(tree);
   // var i = 0;
   // tree.setLoop(function () {
@@ -298,6 +279,6 @@ oCanvas.domReady(function () {
   //   console.log(i);
   // });
   // tree.timeline.start();
-  // var algo_tree = algo(tree);
+  var algo_tree = algo(tree);
 
 });

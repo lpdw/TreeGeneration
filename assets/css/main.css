@@ -1,15 +1,17 @@
 body{
   margin:0;
-  text-align: center;
+  /*text-align: center;*/
   position: relative;
+  /*overflow: hidden;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #tree{
-  position: absolute;
-  left: 40%;
   z-index: 50;
 }
 div.button{
-  position: absolute;
-  z-index: 99;
+  z-index: 10000;
 }

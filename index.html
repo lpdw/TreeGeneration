@@ -40,7 +40,6 @@
     socket.on('new_inputs', function (data) {
       // New Branch
       console.log(data);
-      $('#button').click();
       socket.emit('my other event', { my: 'data' });
       algo(tree_global).generate(data);
     });
