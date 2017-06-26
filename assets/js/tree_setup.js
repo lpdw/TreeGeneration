@@ -108,12 +108,11 @@ function randomBranches(){
   //   // console.log(i);
   // });
 
-  var iteration = 200;
+  var iteration;
   HTMLbutton.addEventListener("click", function(e){
-
         // generate();
+          iteration = 1;
             generate();
-            iteration = 1;
   });
     function generate(){
         // iteration--;
