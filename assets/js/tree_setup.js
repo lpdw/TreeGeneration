@@ -50,8 +50,7 @@ oCanvas.domReady(function () {
   });
   var iteration = 2000;
   function generate(){
-    if(iteration-- >0){
-      setTimeout(generate, 2000);
+
 
       var myWords= {inputs:[]};
 
@@ -61,8 +60,7 @@ oCanvas.domReady(function () {
         myWords.inputs.push(words[keys[ keys.length * Math.random() << 0]]);
       }
       algo.generate(myWords);
-      generate();
-    }
+
   }
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
@@ -162,6 +160,7 @@ function randomBranches(){
   socket.on('new_inputs', function (data) {
     // New Branch
     console.log(data);
+    // algo.generate(data);
     //socket.emit('my other event', { my: 'data' });
     //algo(tree_global).generate(data);
   });

@@ -107,7 +107,7 @@ var leaf = function (settings, core){
     animationStade:0,
     isInit: false,
     join: "round",
-    originPoint:undefined,
+    leafOriginPoint:undefined,
     shape: "round",
     shapeFill: false,
     size:1,
@@ -118,8 +118,8 @@ var leaf = function (settings, core){
       this.animate({
     		animationStade: 100
     	   }, {
-    		easing: "ease-in-out",
-        duration: 5000
+    		easing: "ease-out-quad",
+        duration: 10000
     	});
 
     },
@@ -134,17 +134,26 @@ var leaf = function (settings, core){
         invProgress = 1 - progress,
         size = this.size * progress/ (oCanvas.Zoom.level/100);
 
-        if (this.parent.points != undefined && settings.startPoint && !this.isInit){
-          this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+        if (this.parent.points != undefined && this.startPoint && !this.isInit){
+          this.leafOriginPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          console.log("init");
           this.isInit = true;
         }
+        if(this.leafOriginPoint  === undefined)
+          {
+            console.log('error', this.parent.point,this.startPoint, this.isInit);
+            return;
+          }
+
+        // console.log(this.parent);
+        // console.log(this.originPoint);
         canvas.beginPath();
         canvas.lineWidth = strokeWidth;
         canvas.strokeStyle = this.strokeColor;
         canvas.fillStyle = this.strokeColor;
         canvas.lineJoin = this.join;
         canvas.lineCap = this.cap;
-        var origin = new Point(this.originPoint.x + zoomOffset,this.originPoint.y);
+        var origin = new Point(this.leafOriginPoint.x + zoomOffset,this.leafOriginPoint.y);
         canvas.moveTo(origin.drawX(), origin.drawY());
         var end_line = new Point(origin.x + (size * Math.cos(angle))
                                   ,origin.y + (size * Math.sin(angle))) ;
@@ -293,12 +302,16 @@ var branche = function (settings, core){
         lastPoint.x += zoomOffset;
         var currentPoint = new Point();
         var prevPoint = new Point();
-
+        // console.log(points);
         for(var i = 0; i < points.length; i++){
           if(progress != 1 && i == points.length - (1 + (Math.floor(invProgress * this.pointsAdded))) ){
             // Anime la dernière partie du chemin, selon le paramètre progress
-            lastPoint.x =  points[i - 1].x + ((points[i].x - points[i - 1].x) * ((progress % (1/this.pointsAdded)) * this.pointsAdded)) + zoomOffset;
-            lastPoint.y =  points[i - 1].y + ((points[i].y - points[i - 1].y) * ((progress % (1/this.pointsAdded)) * this.pointsAdded));
+            var point = points[i];
+            // console.log(point);
+            var prevPoint = points[i-1] === undefined ? points[i] : points[i-1];
+            // console.log(prevPoint);
+            lastPoint.x =  prevPoint.x + ((point.x - prevPoint.x) * ((progress % (1/this.pointsAdded)) * this.pointsAdded)) + zoomOffset;
+            lastPoint.y =  prevPoint.y + ((point.y - prevPoint.y) * ((progress % (1/this.pointsAdded)) * this.pointsAdded));
             canvas.lineTo(lastPoint.drawX(),lastPoint.drawY());
             break;
           }
@@ -371,15 +384,15 @@ var branche = function (settings, core){
           var margin = oCanvas.Zoom.margin;
           // console.log(lastPoint.drawX(), LastPoint.drawX());
           if(lastPoint.drawX() > oCanvas.Zoom.canvas.width - margin){
-            console.log("Too on the right", lastPoint.drawX(), oCanvas.Zoom.canvas.width - margin);
+            // console.log("Too on the right", lastPoint.drawX(), oCanvas.Zoom.canvas.width - margin);
             overflow = (lastPoint.drawX() - (oCanvas.Zoom.canvas.width - margin)) / (oCanvas.Zoom.canvas.width - margin);
           }
           else if(lastPoint.drawX() < margin){
-            console.log("Too on the left",lastPoint.drawX(), margin );
+            // console.log("Too on the left",lastPoint.drawX(), margin );
             overflow = (margin - lastPoint.drawX()) / (oCanvas.Zoom.canvas.width - margin);
           }
           else if(lastPoint.drawY() < margin){
-            console.log("Too High", lastPoint.drawY() )
+            // console.log("Too High", lastPoint.drawY() )
             overflow = (margin - lastPoint.drawY())  / (oCanvas.Zoom.canvas.height - margin);
           }
 
@@ -405,18 +418,18 @@ var branche = function (settings, core){
       this.pointsAdded = points.length;
       this.points.push.apply(this.points, points);
       // set animation stade to zéro
-      // if(!animate || this.animationStade != 100){
-      //   this.animation
-      //   return;
-      // }
-      //
-      // this.animationStade = 0,
-      // this.animate({
-    	// 	animationStade: 100
-    	//    }, {
-    	// 	easing: "ease-out-quad",
-      //   duration: 200
-    	// });
+      if(!animate || this.animationStade != 100){
+        this.animation
+        return;
+      }
+
+      this.animationStade = 0,
+      this.animate({
+    		animationStade: 100
+    	   }, {
+    		easing: "ease-out-quad",
+        duration: 10000
+    	});
       this.redraw();
     },
     addChildcustom(object){

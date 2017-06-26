@@ -25,15 +25,6 @@ Experience:22,
 Narration:23,
 Outil:24,
 }
-var test = {
-  "Tristesse":1,
-  "Outil":1,
-  "Narration":1,
-  "Experience":1,
-  "Technique":1,
-  "Arts": 1
-}
-
 var value_input= 0;
 var list_input = [1,1,1,1,1,1,1];
 var tree_global;
@@ -86,14 +77,14 @@ var algo =  {
                                                   words.Nature,
                                                 ) ? Math.cos : Math.sin;
 
-    var x = this.containOneofWords(words.Ignorance) ? this.currentBranche.direction * -0.1: this.currentBranche.direction * 0.1;
+    var x = this.currentBranche.direction * 0.1;
     var y = 1;
     for(var i = 0; i< tot; i++){
       points.push({x: x * func(i / this.params.freq) / this.params.amplitude,
                    y: y +  this.params.amplitude });
     }
     // console.log(points);
-    this.currentBranche.addPoints(points, false);
+    this.currentBranche.addPoints(points);
   },
   addLeaf: function(){
       var leaf = this.treeGlobal.display.leaf({
@@ -104,7 +95,7 @@ var algo =  {
         angle:((this.inputValue/101) * 360) - 90,
         shape: this.avgValue > 6 ? "square" : "circle",
         shapeFill: this.inputValue%2 === 0,
-        animationStade: 100
+        animationStade: 0
       });
     this.currentBranche.addChildcustom(leaf);
   },
@@ -159,21 +150,21 @@ var algo =  {
       }
     if(type==="addLeaf"){
       if(this.containOneofWords(words.Tristesse, words.Joie))
-        this.params.size = 25;
+        this.params.size = 10;
       else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
-        this.params.size = 28;
+        this.params.size = 12;
       else if(this.containOneofWords(words.Savoir_faire, words.Entraide) && this.inputValue < 50)
-        this.params.size = 32;
+        this.params.size = 14;
       else if(this.containOneofWords(words.Do_It_Yourself,words.Citoyen))
-        this.params.size = 35;
+        this.params.size = 15;
       else if(this.containOneofWords(words.Toucher, words.Citoyen))
-        this.params.size = 38;
+        this.params.size = 16;
       else if(this.containOneofWords(words.Narration, words.Ecouter, words.Ludique,words.Creation))
-        this.params.size = 40;
+        this.params.size = 17;
       else if(this.containOneofWords(words.Narration) && this.avgValue > 20)
-        this.params.size = 42;
+        this.params.size = 18;
       else
-        this.params.size = 35;
+        this.params.size = 13;
       }
       if(type === "addPoints" || type === "createBranche"){
         if(this.containOneofWords(words.Tristesse, words.Joie))
@@ -358,7 +349,7 @@ var algo =  {
   },
   enlarge: function(branche){
     // console.log('Enlarge');
-    branche.strokeWidth += 0.5;
+    branche.strokeWidth += 2.5;
     for(var i = branche.branches.length - 1; i>=0; i--){
       this.enlarge(branche.branches[i]);
     }
