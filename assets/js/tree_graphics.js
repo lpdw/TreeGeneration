@@ -85,8 +85,9 @@ red2 = 'hsla(5, 48%, 51%, 0.95)',
 orange1 = 'hsla(29, 84%, 61%, 0.95)',
 orange2 = 'hsla(39, 90%, 69%, 0.95)',
 white = 'hsla(255, 85%, 98%, 0.95)',
-black = 'hsla(220,13%,18%, 1)';
-var colors = [cyan, blue, purple, green, red1, red2, orange1, orange2, white];
+black = 'hsla(220,13%,18%, 1)',
+gold = 'hsl(43, 100%, 57%)';
+var colors = [cyan, blue, purple, green, red1, red2, orange1, orange2, white, gold];
 var shapes = ["square", "circle"];
 /* Parametres :
 Feuilles : origin,
@@ -119,7 +120,7 @@ var leaf = function (settings, core){
     		animationStade: 100
     	   }, {
     		easing: "ease-out-quad",
-        duration: 10000
+        duration: 6000
     	});
 
     },
@@ -136,12 +137,11 @@ var leaf = function (settings, core){
 
         if (this.parent.points != undefined && this.startPoint && !this.isInit){
           this.leafOriginPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
-          console.log("init");
+          console.log("new leaf");
           this.isInit = true;
         }
         if(this.leafOriginPoint  === undefined)
           {
-            console.log('error', this.parent.point,this.startPoint, this.isInit);
             return;
           }
 
@@ -255,6 +255,7 @@ var branche = function (settings, core){
     originPoint:undefined,
     trunk: false,
     branches: [],
+    leaves: [],
     nbLeafs:0,
     pointsAdded:0,
     type:"branche",
@@ -428,7 +429,7 @@ var branche = function (settings, core){
     		animationStade: 100
     	   }, {
     		easing: "ease-out-quad",
-        duration: 10000
+        duration: 6000
     	});
       this.redraw();
     },
@@ -440,6 +441,7 @@ var branche = function (settings, core){
       if (object.type === "branche")
         this.branches.push(object);
       else {
+        this.leaves.push(object);
         this.nbLeafs++;
       }
     }

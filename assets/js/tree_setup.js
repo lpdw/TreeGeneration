@@ -19,48 +19,32 @@ oCanvas.domReady(function () {
     fps: 30,
 
   });
-
+  var iteration = 200;
   HTMLbutton.addEventListener("click", function(e){
-      // branches.map(function(element){
-      //   return element.strokeWidth *= 1.1;
-      // });
-    //
-    // setTimeout(function(){
-    //   var branche = branches[Math.arrayRand(branches.length)];
-    //   var newPoints= [];
-    //   for(var i =0; i< 10; i++){
-    //     newPoints.push({
-    //       x: 5 * Math.cos(i *5),
-    //       y: 2*i
-    //     });
-    //   }
-    //   branche.addPoints(newPoints);
-    // }, 500);
 
-        // // setTimeout(function(){
-        // for(vari=0; i<2000; i++){
-        //   setTimeout(function() {
-        //
-        //   }, 2000);
-        // }
-        generate();
+        // generate();
+            generate();
+            iteration = 500;
+            console.log(iteration);
 
-        // }, 500);
 
   });
-  var iteration = 2000;
+
   function generate(){
+      iteration--;
+      if(iteration>0){
+          setTimeout(function(){
+              var myWords= {inputs:[]};
 
+              var keys = Object.keys(words);
 
-      var myWords= {inputs:[]};
-
-      var keys = Object.keys(words);
-
-      for(var j =Math.rand(4,6); j >= 0; j--){
-        myWords.inputs.push(words[keys[ keys.length * Math.random() << 0]]);
+              for(var j =Math.rand(4,6); j >= 0; j--){
+                myWords.inputs.push(words[keys[ keys.length * Math.random() << 0]]);
+              }
+              algo.generate(myWords);
+              generate();
+          }, 200);
       }
-      algo.generate(myWords);
-
   }
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
@@ -77,6 +61,7 @@ oCanvas.domReady(function () {
   })
   HTMLleafbutton.addEventListener("click", function(){
     generateLeaf();
+
   })
 var leafs = [];
 leafs["square"] = [];
@@ -140,13 +125,13 @@ function randomBranches(){
   // algo.init(tree);
   // algo.generate(tree);
   // var i = 0;
-  // tree.setLoop(function () {
-  //   for(var j = 0; j < leafs["square"].length; j++){
-  //       leafs["square"][j].leafRotation = i;
-  //   }
-  //   i = i > 360 ? 0 : i+1;
-  //   // console.log(i);
-  // });
+  tree.setLoop(function () {
+
+    for(var j = 0; j < leafs["square"].length; j++){
+    }
+    i = i > 360 ? 0 : i+1;
+    // console.log(i);
+  });
   algo.init(tree);
 // Regarder si mots sur API et les générer ( peut être mettre un delai)
   $.ajax("https://api-tree.herokuapp.com/BeforeDate").done(function(data){

@@ -74,14 +74,18 @@ var algo =  {
     var func = this.containOneofWords(words.Tristesse,
                                                   words.Ecouter,
                                                   words.Creation,
-                                                  words.Nature,
+                                                  words.Nature
                                                 ) ? Math.cos : Math.sin;
 
-    var x = this.currentBranche.direction * 0.1;
+    if(this.nbInput < 100) {
+        var x = this.currentBranche.direction * 0.2;
+    } else {
+        var x = this.currentBranche.direction * 0.03;
+    }
     var y = 1;
     for(var i = 0; i< tot; i++){
       points.push({x: x * func(i / this.params.freq) / this.params.amplitude,
-                   y: y +  this.params.amplitude });
+                   y: Math.abs(y *  this.params.amplitude )});
     }
     // console.log(points);
     this.currentBranche.addPoints(points);
@@ -184,21 +188,21 @@ var algo =  {
         else
           this.params.freq = 15;
         if(this.containOneofWords(words.Tristesse, words.Joie))
-          this.params.amplitude = 0.1;
+          this.params.amplitude = -0.3;
         else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
           this.params.amplitude = 0.3;
         else if(this.containOneofWords(words.Savoir_faire, words.Entraide) && this.inputValue < 50)
-          this.params.amplitude = 0.4;
+          this.params.amplitude = 0.1;
         else if(this.containOneofWords(words.Do_It_Yourself,words.Citoyen))
-          this.params.amplitude = 0.8;
+          this.params.amplitude = 0.2;
         else if(this.containOneofWords(words.Toucher, words.Citoyen))
-          this.params.amplitude = 1;
+          this.params.amplitude = -0.2;
         else if(this.containOneofWords(words.Narration, words.Ecouter, words.Ludique,words.Creation))
-          this.params.amplitude = 1.2;
+          this.params.amplitude = -0.5;
         else if(this.containOneofWords(words.Narration) && this.avgValue > 20)
-          this.params.amplitude = 1.5;
+          this.params.amplitude = 0.8;
         else
-          this.params.amplitude = 0.9;
+          this.params.amplitude = -0.4;
       }
 
   },
@@ -325,7 +329,7 @@ var algo =  {
                                                     words.Creation,
                                                     words.Curiosite,
                                                     words.Savoir_faire,
-                                                    words.Narration,
+                                                    words.Narration
                                                      ))
       {
         this.currentBranche = base;
@@ -333,8 +337,12 @@ var algo =  {
         return "addLeaf";
       }
     else{
-      if(base.branches.length > 0)
-        return this.getBrancheAndAction(base.branches[Math.floor((this.avgValue / 21) * base.branches.length)]);
+      if(base.branches.length > 0){
+          if(base.branches[Math.floor((this.avgValue / 21) * base.branches.length)])
+            return this.getBrancheAndAction(base.branches[Math.floor((this.avgValue / 21) * base.branches.length)]);
+        else
+            return this.getBrancheAndAction(base.branches[base.branches.length - 1]);
+      }
 
       this.currentBranche = base;
       // console.log("create Branche default");
@@ -348,10 +356,13 @@ var algo =  {
     }
   },
   enlarge: function(branche){
-    // console.log('Enlarge');
+    console.log('Enlarge');
     branche.strokeWidth += 2.5;
     for(var i = branche.branches.length - 1; i>=0; i--){
       this.enlarge(branche.branches[i]);
+      for(var j = 0; j < branche.branches[i].leaves.length; j++) {
+          branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
+      }
     }
   }
 
