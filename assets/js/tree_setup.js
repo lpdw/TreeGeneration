@@ -134,17 +134,17 @@ function randomBranches(){
   });
   algo.init(tree);
 // Regarder si mots sur API et les générer ( peut être mettre un delai)
-  $.ajax("https://api-tree.herokuapp.com/BeforeDate").done(function(data){
-    console.log(data);
-    for (var i=0; data.length; i++){
-      algo.generate(data[i]);
+  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-26T09:39:44.869Z").done(function(data){
+    for (var i=0; i<data.inputs.length; i++){
+      algo.generate(data.inputs[i]);
     }
-  })
+  });
   // une foi générer se connecter à socket pour récupérer les suivants.
-  var socket = io.connect('https://api-tree.herokuapp.com/');
+  // A fixer :-)
+  var socket = io.connect('https://api-tree.herokuapp.com/inputs');
   socket.on('new_inputs', function (data) {
     // New Branch
-    console.log(data);
+    console.log("data : ", data);
     // algo.generate(data);
     //socket.emit('my other event', { my: 'data' });
     //algo(tree_global).generate(data);
