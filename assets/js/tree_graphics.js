@@ -117,7 +117,7 @@ var leaf = function (settings, core){
     type: "leaf",
     animationStade:0,
     init: function(){
-        if(settings.animationStade!=0){
+        if(settings.animationStade!=100){
         this.animate({
               animationStade: 100
              }, {

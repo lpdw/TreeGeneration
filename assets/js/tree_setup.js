@@ -142,8 +142,6 @@ function randomBranches(){
             }, 500);
         }
     }
-
-
   algo.init(tree);
 // Regarder si mots sur API et les générer ( peut être mettre un delai)
 
@@ -156,7 +154,7 @@ function randomBranches(){
   });
   // une foi générer se connecter à socket pour récupérer les suivants.
   // A fixer :-)
-  var socket = io.connect('https://api-tree.herokuapp.com/inputs');
+  var socket = io.connect('https://api-tree.herokuapp.com');
   socket.on('new_inputs', function (data) {
     // New Branch
     console.log("socket data : ", data);
