@@ -15,8 +15,7 @@ oCanvas.Zoom = {
   margin:0,
   Init: function(canvas, level){
     this.canvas = canvas;
-    this.margin = canvas.height *0.08;
-    console.log(this.margin);
+    this.margin = 10;
     this.setLevel(level);
   },
   setLevel: function(newLevel){
@@ -34,14 +33,6 @@ oCanvas.Zoom = {
 
 };
 
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
 
 // var ZoomX = 500;
 // var ZoomY = ZoomX * (document.getElementById("tree").width / document.getElementById("tree").height);
@@ -49,12 +40,6 @@ function sleep(milliseconds) {
 //   var ZoomY = 500;
 //   var ZoomX = ZoomX / (document.getElementById("tree").width / document.getElementById("tree").height);
 // }
-function sleep(miliseconds) {
-   var currentTime = new Date().getTime();
-
-   while (currentTime + miliseconds >= new Date().getTime()) {
-   }
-}
 function drawPoly(ctx, start, sides, angle, size, rotation = 0){
   size /= 2;
   var center = new Point(start.x + (size * Math.cos(angle)), start.y + (size * Math.sin(angle)) );
@@ -121,13 +106,14 @@ var leaf = function (settings, core){
     core: core,
     animationStade:0,
     isInit: false,
-    join: "square",
+    join: "round",
     originPoint:undefined,
-    shape: "square",
+    shape: "round",
     shapeFill: false,
     size:1,
     angle:90,
     leafRotation:0,
+    type: "leaf",
     init: function(){
       this.animate({
     		animationStade: 100
@@ -135,17 +121,18 @@ var leaf = function (settings, core){
     		easing: "ease-in-out",
         duration: 5000
     	});
+
     },
     draw: function(){
       var canvas = this.core.canvas,
         origin = this.getOrigin(),
         angle = Math.radians(this.angle),
         leafRotation = Math.radians(this.leafRotation)
-        strokeWidth = this.strokeWidth / oCanvas.Zoom.level,
+        strokeWidth = this.strokeWidth / (oCanvas.Zoom.level/100),
         zoomOffset = oCanvas.Zoom.offset,
         progress = this.animationStade / 100,
         invProgress = 1 - progress,
-        size = this.size * progress;
+        size = this.size * progress/ (oCanvas.Zoom.level/100);
 
         if (this.parent.points != undefined && settings.startPoint && !this.isInit){
           this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
@@ -157,9 +144,9 @@ var leaf = function (settings, core){
         canvas.fillStyle = this.strokeColor;
         canvas.lineJoin = this.join;
         canvas.lineCap = this.cap;
-        var origin = new Point(this.originPoint.x + zoomOffset,this.originPoint.y );
+        var origin = new Point(this.originPoint.x + zoomOffset,this.originPoint.y);
         canvas.moveTo(origin.drawX(), origin.drawY());
-        var end_line = new Point(origin.x + (size *Math.cos(angle))
+        var end_line = new Point(origin.x + (size * Math.cos(angle))
                                   ,origin.y + (size * Math.sin(angle))) ;
         canvas.lineTo(end_line.drawX(), end_line.drawY());
         canvas.stroke();
@@ -171,8 +158,7 @@ var leaf = function (settings, core){
             dist /= 2;
           var center = new Point(end_line.x + (dist *Math.cos(angle))
                                     ,end_line.y + (dist * Math.sin(angle))) ;
-          console.log(Math.sin(progress*6))
-          var ellipsesize = (Math.sin(progress*6 ) + .5) * (20*invProgress + 10) + dist * 2;
+          var ellipsesize = (Math.sin(progress*6 ) +1) * (5*invProgress + 10) + dist;
           var grd = canvas.createRadialGradient(
                               center.drawX(),
                               center.drawY(),
@@ -192,12 +178,7 @@ var leaf = function (settings, core){
 
 
         canvas.beginPath();
-        console.log(this.shape);
         if(this.shape === "square"){
-            //
-            // var center = new Point(end_line.x + (size/10 * Math.cos(angle)),end_line.y + (size/10 * Math.sin(angle)) );
-
-
             drawPoly(canvas,end_line,4,angle,size, leafRotation);
             canvas.stroke();
 
@@ -260,24 +241,28 @@ var branche = function (settings, core){
     animationStade:100,
     points:[],
     isInit: false,
-    join: "square",
+    join: "round",
+    cap: "round",
     originPoint:undefined,
     trunk: false,
+    branches: [],
+    nbLeafs:0,
+    pointsAdded:0,
+    type:"branche",
     init: function(){
-      if(settings.points != undefined){
+      if(settings.points != undefined && settings.points.length > 1){
         for(var i = 1;i<settings.points.length;i++){
           settings.points[i].x = settings.points[i-1].x + settings.points[i].x;
           settings.points[i].y = settings.points[i-1].y + settings.points[i].y;
         }
       }
-      this.strokeWidth = settings.strokeWidth;
     },
     draw: function(){
       var canvas = this.core.canvas;
-
-        if (this.parent.points != undefined && settings.startPoint && !this.isInit){
+      if (this.parent.points != undefined && settings.startPoint && !this.isInit){
           this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
           var origin = this.originPoint;
+          // console.log(settings.points);
           this.points = settings.points.map(function(point){
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
@@ -286,6 +271,7 @@ var branche = function (settings, core){
         if(this.points == null )
           return;
         points = this.points;
+
         if(this.trunk){
           if(oCanvas.Zoom.overflow > 0){
             oCanvas.Zoom.setLevel(oCanvas.Zoom.level *( 1 + oCanvas.Zoom.overflow));
@@ -302,16 +288,19 @@ var branche = function (settings, core){
 
 
         var progress = this.animationStade / 100;
-        var lastPoint = new Point(points[points.length - 1].x,points[points.length - 1].y) ;
+        var invProgress = 1 - progress;
+        var lastPoint = new Point(points[points.length - 1].x,points[points.length - 1].y);
+        lastPoint.x += zoomOffset;
         var currentPoint = new Point();
         var prevPoint = new Point();
+
         for(var i = 0; i < points.length; i++){
-          if(i == points.length - 1 && progress != 1){
+          if(progress != 1 && i == points.length - (1 + (Math.floor(invProgress * this.pointsAdded))) ){
             // Anime la dernière partie du chemin, selon le paramètre progress
-            lastPoint.x =  points[i - 1].x + ((points[i].x - points[i - 1].x) * progress) + zoomOffset;
-            lastPoint.y =  points[i - 1].y + ((points[i].y - points[i - 1].y) * progress);
+            lastPoint.x =  points[i - 1].x + ((points[i].x - points[i - 1].x) * ((progress % (1/this.pointsAdded)) * this.pointsAdded)) + zoomOffset;
+            lastPoint.y =  points[i - 1].y + ((points[i].y - points[i - 1].y) * ((progress % (1/this.pointsAdded)) * this.pointsAdded));
             canvas.lineTo(lastPoint.drawX(),lastPoint.drawY());
-            continue;
+            break;
           }
           currentPoint.set(points[i]);
           currentPoint.x += zoomOffset;
@@ -325,28 +314,28 @@ var branche = function (settings, core){
             canvas.moveTo(prevPoint.drawX(),prevPoint.drawY());
           }
           canvas.lineTo(currentPoint.drawX(), currentPoint.drawY());
+
         }
         canvas.stroke();
         canvas.closePath();
         if(progress != 1){
-          var invProgress = 1 - progress;
           canvas.beginPath();
           var size = (Math.sin(invProgress*20) + 2) * (20*invProgress + 10);
           var grd = canvas.createRadialGradient(
                               lastPoint.drawX(),
                               lastPoint.drawY(),
-                              oCanvas.Zoom.convert(size/3),
+                              oCanvas.Zoom.convert(size/12),
                               lastPoint.drawX(),
                               lastPoint.drawY(),
-                              oCanvas.Zoom.convert(size));
+                              oCanvas.Zoom.convert(size/4));
           grd.addColorStop(0,"transparent");
           grd.addColorStop(1,"white");
           canvas.fillStyle = grd;
-          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size), 0, Math.PI * 2, false);
+          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size/4), 0, Math.PI * 2, false);
           canvas.fill();
           canvas.closePath();
           canvas.beginPath();
-          canvas.lineWidth = this.lineWidth * (1 - progress);
+          canvas.lineWidth = (this.lineWidth * (1 - progress))/2;
           canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
           //progress = progress == 0 ? 0.0001 : progress;
           var max = Math.floor(150 * invProgress);
@@ -379,19 +368,22 @@ var branche = function (settings, core){
         }
 
           var overflow = 0;
-          lastPoint.set(points[points.length - 1]) ;
           var margin = oCanvas.Zoom.margin;
+          // console.log(lastPoint.drawX(), LastPoint.drawX());
           if(lastPoint.drawX() > oCanvas.Zoom.canvas.width - margin){
+            console.log("Too on the right", lastPoint.drawX(), oCanvas.Zoom.canvas.width - margin);
             overflow = (lastPoint.drawX() - (oCanvas.Zoom.canvas.width - margin)) / (oCanvas.Zoom.canvas.width - margin);
           }
           else if(lastPoint.drawX() < margin){
+            console.log("Too on the left",lastPoint.drawX(), margin );
             overflow = (margin - lastPoint.drawX()) / (oCanvas.Zoom.canvas.width - margin);
           }
           else if(lastPoint.drawY() < margin){
+            console.log("Too High", lastPoint.drawY() )
             overflow = (margin - lastPoint.drawY())  / (oCanvas.Zoom.canvas.height - margin);
           }
 
-          if( overflow != 0 && overflow > oCanvas.Zoom.overflow){
+          if( overflow > 0.01  && overflow > oCanvas.Zoom.overflow){
             oCanvas.Zoom.overflow = overflow ;
           }
         //Pris de oCanvas directement
@@ -401,25 +393,42 @@ var branche = function (settings, core){
 
         return this;
     },
-    addPoint(point, animate = true){
-      // check if the origin point was previously use and use it to compute the absolute path
-      if (this.points != undefined){
-        point.x += this.points[this.points.length - 1].x;
-        point.y += this.points[this.points.length - 1].y;
-      }
-      // this.points.push(ellipse);
-      //push the new point to array
-      this.points.push(point);
+    addPoints(points, animate = true){
+        points[0].x += this.points[this.points.length - 1].x;
+        points[0].y += this.points[this.points.length - 1].y;
+        for (var i = 1; i < points.length; i++){
+          points[i].x += points[i-1].x;
+          points[i].y += points[i-1].y ;
+        }
+
+        //push the new point to array
+      this.pointsAdded = points.length;
+      this.points.push.apply(this.points, points);
       // set animation stade to zéro
-      if(!animate || this.animationStade != 100)
+      // if(!animate || this.animationStade != 100){
+      //   this.animation
+      //   return;
+      // }
+      //
+      // this.animationStade = 0,
+      // this.animate({
+    	// 	animationStade: 100
+    	//    }, {
+    	// 	easing: "ease-out-quad",
+      //   duration: 200
+    	// });
+      this.redraw();
+    },
+    addChildcustom(object){
+      if(this === this.core){
         return;
-      this.animationStade = 0,
-      this.animate({
-    		animationStade: 100
-    	   }, {
-    		easing: "ease-out-quad",
-        duration: 10000
-    	});
+      }
+        this.addChild(object);
+      if (object.type === "branche")
+        this.branches.push(object);
+      else {
+        this.nbLeafs++;
+      }
     }
   },settings);
 };

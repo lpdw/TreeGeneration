@@ -1,109 +1,378 @@
-var point_input= 0;
+
+var words = {
+Tristesse: 1,
+Peur:2,
+Ignorance: 3,
+Joie: 4,
+Plaisir: 5,
+Connaissance: 6,
+Toucher:7,
+Ecouter:8,
+Voir:9,
+Sentir:10,
+Creation:11,
+Virtuel:12,
+Curiosite:13,
+Entraide:14,
+Savoir_faire:15,
+Nature:16,
+Ludique:17,
+Do_It_Yourself:18,
+Arts:19,
+Citoyen:20,
+Technique:21,
+Experience:22,
+Narration:23,
+Outil:24,
+}
+var test = {
+  "Tristesse":1,
+  "Outil":1,
+  "Narration":1,
+  "Experience":1,
+  "Technique":1,
+  "Arts": 1
+}
+
+var value_input= 0;
 var list_input = [1,1,1,1,1,1,1];
 var tree_global;
 
 var BranchePrincipal = [];
 var BrancheSecondaire = [];
 
-var branchetypeA = [{x:0,y:0}, {x:50,y:0}, {x:100,y:-10}, {x:150,y:10}, {x:200,y:15}, {x:250,y:-0}];
-var branchetypeB = [{x:0,y:0}, {x:-50,y:0}, {x:-100,y:10}, {x:-150,y:30}, {x:-200,y:25}, {x:-250,y:30}, {x:-300,y:40}];
-var branchetypeC = [{x:0,y:0}, {x:50,y:30}, {x:100,y:50}, {x:150, y:40}, {x:200,y:60}, {x:250,y:80}, {x:300,y:80}];
-var branchetypeD = [{x:0,y:0}, {x:-50,y:25}, {x:-75,y:30}, {x:-80,y:40}, {x:-90,y:60}, {x:-100,y:80}, {x:-150,y:100}, {x:-200,y:150}];
-var branchetypeE = [{x:0,y:0}, {x:5,y:-5}, {x:5,y:20}, {x:-5,y:30}, {x:5,y:50}, {x:-5,y:100}, {x:5,y:250}];
-
-var SousbranchetypeA = [{x:0,y:0}, {x:10,y:10}];
-var SousbranchetypeB = [{x:0,y:0}, {x:10,y:-10}];
-
 var i =0;
 
-var algo = function(tree) {
-  tree_global = tree;
-  return {
-    generate: function(datas){
-      point_input = traitementInput(datas);
+var algo =  {
+  treeGlobal: null,
+  nbInput:0,
+  currentBranche: null,
+  inputList: [],
+  inputValue: 0,
+  nbBranches:0,
+  avgValue:0,
+  maxValue:0,
+  minValue:0,
+  params:{width:5,color:white, size:20, freq:10,amplitude:5},
+  init: function(tree){
+    this.treeGlobal = tree;
+  },
+  generate: function(datas){
+    // console.log("======START GEN====");
+    // console.log(datas);
+    this.nbInput ++;
+    if(this.nbInput%70 === 0)
+      this.enlarge(this.treeGlobal.children[0]);
+    this.parseInput(datas);
+    if(this.nbInput == 1){
+      // console.log('init trunk')
+      this.initTrunk();
+      this.addPoints();
+    }else{
+      var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
+      this.getParams(action);
+      // console.log(this.params);
+      this[action]();
+    }
 
-      if(BranchePrincipal.find(trouverBranche("branche_principal_A"))){
-        var branche_principal_A = BranchePrincipal.find(trouverBranche("branche_principal_A")).branche;
-      }
-      else{
-        var branche_principal_A = initBranche(tree_global, branchetypeA, 89);
-        BranchePrincipal.push({name:"branche_principal_A", branche:branche_principal_A});
-      }
+    // console.log("======END GEN====");
+  },
+  addPoints: function(){
+    var points = [];
+    var tot = Math.round(this.avgValue/2);
+    var func = this.containOneofWords(words.Tristesse,
+                                                  words.Ecouter,
+                                                  words.Creation,
+                                                  words.Nature,
+                                                ) ? Math.cos : Math.sin;
 
-
-      if(BranchePrincipal.find(trouverBranche("branche_principal_B"))){
-        var branche_principal_B = BranchePrincipal.find(trouverBranche("branche_principal_B")).branche;
-      }
+    var x = this.containOneofWords(words.Ignorance) ? this.currentBranche.direction * -0.1: this.currentBranche.direction * 0.1;
+    var y = 1;
+    for(var i = 0; i< tot; i++){
+      points.push({x: x * func(i / this.params.freq) / this.params.amplitude,
+                   y: y +  this.params.amplitude });
+    }
+    // console.log(points);
+    this.currentBranche.addPoints(points, false);
+  },
+  addLeaf: function(){
+      var leaf = this.treeGlobal.display.leaf({
+        strokeWidth:this.params.width/2,
+        strokeColor:this.params.color,
+        startPoint:((this.inputValue/40)*100)%100 ,
+        size:this.params.size,
+        angle:((this.inputValue/101) * 360) - 90,
+        shape: this.avgValue > 6 ? "square" : "circle",
+        shapeFill: this.inputValue%2 === 0,
+        animationStade: 100
+      });
+    this.currentBranche.addChildcustom(leaf);
+  },
+  createBranche: function(){
+    var branche =  this.treeGlobal.display.branche({
+      strokeWidth:this.params.width,
+      strokeColor:this.params.color,
+      points: [{x:0,y:0}],
+      startPoint: ((this.inputValue/50)*100)%100,
+      maxBranches: 10,
+      maxLeafs: 15,
+      direction: this.nbBranches%2 === 0 ? 1 : -1,
+      maxPoints: 1000 - (this.nbBranches),
+    });
+    this.currentBranche.addChildcustom(branche);
+        // console.log('new branch', branche);
+    this.nbBranches++;
+    this.currentBranche = branche;
+    this.addPoints();
+  },
+  getParams: function(type){
+    if(type === "addPoints" || type === "addLeaf" || type === "createBranche"){
+      if(this.containOneofWords(words.Peur))
+        this.params.width=4;
+      else if(this.containOneofWords(words.Tristesse, words.Ignorance))
+        this.params.width=5;
+      else if(this.containOneofWords(words.Plaisir, words.Connaissance, words.Creation,words.Nature))
+        this.params.width=7;
+      else if(this.containOneofWords(words.Nature, words.Ludique, words.Do_It_Yourself,words.Arts))
+        this.params.width=8;
+      else if(this.containOneofWords(words.Sentir, words.Citoyen, words.Experience))
+        this.params.width=9;
       else
-      {
-        var branche_principal_B = initBranche(tree_global, branchetypeB, 80);
-        BranchePrincipal.push({name:"branche_principal_B", branche:branche_principal_B});
-      }
-
-      if(BranchePrincipal.find(trouverBranche("branche_principal_C"))){
-        var branche_principal_C = BranchePrincipal.find(trouverBranche("branche_principal_C")).branche;
-      }
+        this.params.width=8;
+      if(this.containOneofWords(words.Peur, words.Tristesse))
+        this.params.color = colors[2];
+      else if(this.containOneofWords(words.Connaissance, words.Toucher, words.Nature) && this.avgValue < 15 )
+        this.params.color = colors[3];
+      else if(this.containOneofWords(words.Ignorance)
+            &&this.containOneofWords(words.Savoir_faire, words.Entraide ,words.Citoyen))
+        this.params.color = colors[4];
+      else if(this.containOneofWords(words.Voir, words.Virtuel, words.Curiosite))
+        this.params.color = colors[5];
+      else if(this.containOneofWords(words.Plaisir, words.Technique, words.Entraide, words.Experience,words.Toucher))
+        this.params.color = colors[0];
+      else if(this.containOneofWords(words.Joie, words.Narration, words.Ecouter, words.Ludique,words.Creation))
+        this.params.color = colors[1];
+      else if(this.containOneofWords(words.Outil) && this.avgValue > 10)
+        this.params.color = colors[8];
       else
-      {
-        var branche_principal_C = initBranche(tree_global, branchetypeC, 90);
-        BranchePrincipal.push({name:"branche_principal_C", branche:branche_principal_C});
+        this.params.color = colors[6];
       }
-
-      if(BranchePrincipal.find(trouverBranche("branche_principal_D"))){
-        var branche_principal_D = BranchePrincipal.find(trouverBranche("branche_principal_D")).branche;
-      }
+    if(type==="addLeaf"){
+      if(this.containOneofWords(words.Tristesse, words.Joie))
+        this.params.size = 25;
+      else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
+        this.params.size = 28;
+      else if(this.containOneofWords(words.Savoir_faire, words.Entraide) && this.inputValue < 50)
+        this.params.size = 32;
+      else if(this.containOneofWords(words.Do_It_Yourself,words.Citoyen))
+        this.params.size = 35;
+      else if(this.containOneofWords(words.Toucher, words.Citoyen))
+        this.params.size = 38;
+      else if(this.containOneofWords(words.Narration, words.Ecouter, words.Ludique,words.Creation))
+        this.params.size = 40;
+      else if(this.containOneofWords(words.Narration) && this.avgValue > 20)
+        this.params.size = 42;
       else
+        this.params.size = 35;
+      }
+      if(type === "addPoints" || type === "createBranche"){
+        if(this.containOneofWords(words.Tristesse, words.Joie))
+          this.params.freq = 15;
+        else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
+          this.params.freq = 16;
+        else if(this.containOneofWords(words.Savoir_faire, words.Entraide) && this.inputValue < 50)
+          this.params.freq = 17;
+        else if(this.containOneofWords(words.Do_It_Yourself,words.Citoyen))
+          this.params.freq = 18;
+        else if(this.containOneofWords(words.Toucher, words.Citoyen))
+          this.params.freq = 19;
+        else if(this.containOneofWords(words.Narration, words.Ecouter, words.Ludique,words.Creation))
+          this.params.freq = 20;
+        else if(this.containOneofWords(words.Narration) && this.avgValue > 20)
+          this.params.freq = 21;
+        else
+          this.params.freq = 15;
+        if(this.containOneofWords(words.Tristesse, words.Joie))
+          this.params.amplitude = 0.1;
+        else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
+          this.params.amplitude = 0.3;
+        else if(this.containOneofWords(words.Savoir_faire, words.Entraide) && this.inputValue < 50)
+          this.params.amplitude = 0.4;
+        else if(this.containOneofWords(words.Do_It_Yourself,words.Citoyen))
+          this.params.amplitude = 0.8;
+        else if(this.containOneofWords(words.Toucher, words.Citoyen))
+          this.params.amplitude = 1;
+        else if(this.containOneofWords(words.Narration, words.Ecouter, words.Ludique,words.Creation))
+          this.params.amplitude = 1.2;
+        else if(this.containOneofWords(words.Narration) && this.avgValue > 20)
+          this.params.amplitude = 1.5;
+        else
+          this.params.amplitude = 0.9;
+      }
+
+  },
+  initTrunk: function(){
+    var branche = this.treeGlobal.display.branche({
+      strokeWidth: 8,
+      strokeColor:white,
+      points: [{x:oCanvas.Zoom.canvas.width/2, y:0}],
+      startPoint: 0,
+      trunk: true,
+      maxBranches: 5,
+      maxLeafs: 0,
+      direction: 1,
+      maxPoints: 500,
+    });
+    this.treeGlobal.addChild(branche);
+    this.currentBranche = branche;
+    this.nbBranches++;
+  },
+  parseInput: function(datas){
+    this.inputValue = 0;
+    this.maxValue = 0;
+    this.minValue = 0;
+    for(let i=0; i<datas.inputs.length; i++)
+    {
+        var value = Number(datas.inputs[i]);
+        if (this.maxValue < value)
+          this.maxValue = value;
+        if (this.minValue > value)
+          this.minValue = value;
+        this.inputValue += value;
+    }
+    this.inputList = datas.inputs;
+    this.avgValue = this.inputValue/this.inputList.length;
+  },
+  getBrancheAndAction: function(base){
+    // console.log(base);
+    if(base.points.length < base.maxPoints/15 || (base.points.length < base.maxPoints/4 && this.containOneofWords(words.Outil,
+                                                                      words.Do_It_Yourself,
+                                                                      words.Virtuel,
+                                                                      words.Nature))){
+      // console.log("Action: Branch too small adding points");
+      this.currentBranche = base;
+      return "addPoints";
+    }
+    if (base ===this.treeGlobal.children[0] ){
+      if(this.containOneofWords(words.Tristesse, words.Ignorance))
       {
-        var branche_principal_D = initBranche(tree_global, branchetypeD, 85);
-        BranchePrincipal.push({name:"branche_principal_D", branche:branche_principal_D});
+        if(base.branches[0])
+        {
+          // console.log("Branche 0");
+          return this.getBrancheAndAction(base.branches[0]);
+        }
+        else{
+          this.currentBranche = base;
+          // console.log("Action: Creating branch on trunk (0)");
+          return "createBranche";
+        }
       }
-
-      if(BranchePrincipal.find(trouverBranche("branche_principal_E"))){
-        var branche_principal_E = BranchePrincipal.find(trouverBranche("branche_principal_E")).branche;
-      }
-      else
+      else if(this.containOneofWords(words.Peur, words.Voir))
       {
-        var branche_principal_E = initBranche(tree_global, branchetypeE, 88);
-        BranchePrincipal.push({name:"branche_principal_E", branche:branche_principal_E});
+        if(base.branches[1] != undefined)
+          {// console.log("Branche 1");
+          return this.getBrancheAndAction(base.branches[1]);}
+        else{
+          this.currentBranche = base;
+          // console.log("Action: Creating branch on trunk (1)");
+          return "createBranche";
+        }
       }
-
-      if(i==0){
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeA, 100, "branche_principal_A", branche_principal_A));
-        position=position-20;
-        i++;
+      else if(this.containOneofWords(words.Joie, words.Plaisir))
+      {
+        if(base.branches[2] != undefined)
+          {// console.log("Branche 2");
+          return this.getBrancheAndAction(base.branches[2]);}
+        else{
+          this.currentBranche = base;
+          // console.log("Action: Creating branch on trunk (2)");
+          return "createBranche";
+        }
       }
-      else{
-        BrancheSecondaire.push(initSecondaryBranch(tree_global, SousbranchetypeB, 100, "branche_principal_A", branche_principal_A));
-        i--;
+      else if(this.containOneofWords(words.Connaissance))
+      {
+        if(base.branches[3] != undefined)
+          {// console.log("Branche 3");
+          return this.getBrancheAndAction(base.branches[3]);}
+        else{
+          this.currentBranche = base;
+          // console.log("Action: Creating branch on trunk (3)");
+          return "createBranche";
+        }
       }
-    },
-  }
-}
-
-function trouverBranche(name) {
-    return function(element) {
-      if(element.name == name) {
-        return element;
+      else if(this.containOneofWords(words.Technique, words.Virtuel))
+      {
+        if(base.branches[4] != undefined)
+          {// console.log("Branche 4");
+          return this.getBrancheAndAction(base.branches[4]);
+        }
+        else{
+          this.currentBranche = base;
+          // console.log("Action: Creating branch on trunk (4)");
+          return "createBranche";
+        }
       }
     }
+    if(base.points.length < base.maxPoints
+            && this.containOneofWords(words.Entraide, words.Toucher))
+      {
+        this.currentBranche = base;
+        // console.log("adding points presence of words");
+        return "addPoints";
+      }
+    else if (base.maxBranches > base.branches.length && this.avgValue < 5)
+      {
+        this.currentBranche = base;
+        // console.log("creating branche avgValue small enough");
+        return "createBranche";
+      }
+    else if (base.maxLeafs > base.nbLeafs && this.containOneofWords(words.Joie,
+                                                    words.Connaissance,
+                                                    words.Toucher,
+                                                    words.Voir,
+                                                    words.Sentir,
+                                                    words.Creation,
+                                                    words.Curiosite,
+                                                    words.Savoir_faire,
+                                                    words.Narration,
+                                                     ))
+      {
+        this.currentBranche = base;
+        // console.log("adding leaf presence of words");
+        return "addLeaf";
+      }
+    else{
+      if(base.branches.length > 0)
+        return this.getBrancheAndAction(base.branches[Math.floor((this.avgValue / 21) * base.branches.length)]);
+
+      this.currentBranche = base;
+      // console.log("create Branche default");
+      return "createBranche";
+    }
+  },
+  containOneofWords: function(){
+    for(var i = arguments.length - 1; i >= 0 ; i--){
+      if (this.inputList.indexOf(arguments[i]) != -1)
+        return true;
+    }
+  },
+  enlarge: function(branche){
+    // console.log('Enlarge');
+    branche.strokeWidth += 0.5;
+    for(var i = branche.branches.length - 1; i>=0; i--){
+      this.enlarge(branche.branches[i]);
+    }
+  }
+
 }
+// function trouverBranche(name) {
+//     return function(element) {
+//       if(element.name == name) {
+//         return element;
+//       }
+//     }
+// }
 
-
-
-
-function initBranche(tree_global, branchetype, InitialPoint){
-  var branche =  tree_global.display.branche({
-    strokeWidth:2,
-    strokeColor:"black",
-    points: branchetype.slice(0,2),
-    join: "round",
-    cap: "round",
-    startPoint: InitialPoint,
-  });
-
-  tree_global.children[0].addChild(branche);
-  return branche;
-}
 
 function initSecondaryBranch(tree_global, brancheType, InitialPoint, parent_name, parent){
     var sub_branch = tree_global.display.branche({
@@ -121,11 +390,5 @@ function initSecondaryBranch(tree_global, brancheType, InitialPoint, parent_name
 
 function traitementInput(datas)
 {
-  let point_input = 0;
-  for(let i=0; i<datas.inputs.length; i++)
-  {
-      point_input = point_input + Number(datas.inputs[i].value);
-  }
 
-  return point_input;
 }
