@@ -222,16 +222,17 @@ var algo =  {
     this.inputValue = 0;
     this.maxValue = 0;
     this.minValue = 0;
-    for(let i=0; i<datas.inputs.length; i++)
+    console.log(Number(datas.words[1]));
+    for(let i=0; i<datas.words.length; i++)
     {
-        var value = Number(datas.inputs[i]);
+        var value = Number(datas.words[i]);
         if (this.maxValue < value)
           this.maxValue = value;
         if (this.minValue > value)
           this.minValue = value;
         this.inputValue += value;
     }
-    this.inputList = datas.inputs;
+    this.inputList = datas.words;
     this.avgValue = this.inputValue/this.inputList.length;
   },
   getBrancheAndAction: function(base){
