@@ -45,13 +45,15 @@ var algo =  {
   maxValue:0,
   minValue:0,
   params:{width:5,color:white, size:20, freq:10,amplitude:5},
+  animate:true,
   init: function(tree){
     this.treeGlobal = tree;
   },
-  generate: function(datas){
+  generate: function(datas, animate=true){
     // console.log("======START GEN====");
     // console.log(datas);
     this.nbInput ++;
+    this.animate = animate;
     if(this.nbInput%70 === 0)
       this.enlarge(this.treeGlobal.children[0]);
     this.parseInput(datas);
@@ -88,7 +90,7 @@ var algo =  {
                    y: Math.abs(y *  this.params.amplitude )});
     }
     // console.log(points);
-    this.currentBranche.addPoints(points);
+    this.currentBranche.addPoints(points, this.animate);
   },
   addLeaf: function(){
       var leaf = this.treeGlobal.display.leaf({
@@ -99,7 +101,7 @@ var algo =  {
         angle:((this.inputValue/101) * 360) - 90,
         shape: this.avgValue > 6 ? "square" : "circle",
         shapeFill: this.inputValue%2 === 0,
-        animationStade: 0
+        animationStade: this.animate ? 0:100,
       });
     this.currentBranche.addChildcustom(leaf);
   },
@@ -221,23 +223,6 @@ var algo =  {
     this.treeGlobal.addChild(branche);
     this.currentBranche = branche;
     this.nbBranches++;
-  },
-  parseInput: function(datas){
-    this.inputValue = 0;
-    this.maxValue = 0;
-    this.minValue = 0;
-    console.log(Number(datas.words[1]));
-    for(let i=0; i<datas.words.length; i++)
-    {
-        var value = Number(datas.words[i]);
-        if (this.maxValue < value)
-          this.maxValue = value;
-        if (this.minValue > value)
-          this.minValue = value;
-        this.inputValue += value;
-    }
-    this.inputList = datas.words;
-    this.avgValue = this.inputValue/this.inputList.length;
   },
   getBrancheAndAction: function(base){
     // console.log(base);
@@ -365,6 +350,22 @@ var algo =  {
           branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
       }
     }
+},
+parseInput: function(words){
+    this.inputValue = 0;
+    this.maxValue = 0;
+    this.minValue = 0;
+    for(let i=0; i<words.length; i++)
+    {
+        var value = Number(words[i]);
+        if (this.maxValue < value)
+          this.maxValue = value;
+        if (this.minValue > value)
+          this.minValue = value;
+        this.inputValue += value;
+    }
+    this.inputList = words;
+    this.avgValue = this.inputValue/this.inputList.length;
   }
 
 }

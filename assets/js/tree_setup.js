@@ -19,33 +19,8 @@ oCanvas.domReady(function () {
     fps: 30,
 
   });
-  var iteration = 200;
-  HTMLbutton.addEventListener("click", function(e){
-
-        // generate();
-            generate();
-            iteration = 500;
-            console.log(iteration);
 
 
-  });
-
-  function generate(){
-      iteration--;
-      if(iteration>0){
-          setTimeout(function(){
-              var myWords= {inputs:[]};
-
-              var keys = Object.keys(words);
-
-              for(var j =Math.rand(4,6); j >= 0; j--){
-                myWords.inputs.push(words[keys[ keys.length * Math.random() << 0]]);
-              }
-              algo.generate(myWords);
-              generate();
-          }, 200);
-      }
-  }
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
@@ -125,27 +100,67 @@ function randomBranches(){
   // algo.init(tree);
   // algo.generate(tree);
   // var i = 0;
-  tree.setLoop(function () {
+  // tree.setLoop(function () {
+  //
+  //   for(var j = 0; j < leafs["square"].length; j++){
+  //   }
+  //   i = i > 360 ? 0 : i+1;
+  //   // console.log(i);
+  // });
 
-    for(var j = 0; j < leafs["square"].length; j++){
-    }
-    i = i > 360 ? 0 : i+1;
-    // console.log(i);
+  var iteration = 200;
+  HTMLbutton.addEventListener("click", function(e){
+
+        // generate();
+            generate();
+            iteration = 1;
   });
+    function generate(){
+        // iteration--;
+        if(iteration>0){
+            setTimeout(function(){
+                var myWords= {"words":[]};
+
+                var keys = Object.keys(words);
+
+                for(var j =Math.rand(4,6); j >= 0; j--){
+                  myWords["words"].push(words[keys[ keys.length * Math.random() << 0]]);
+                }
+                // algo.generate(myWords);
+                console.log(myWords.words);
+                console.log(JSON.stringify(myWords));
+                $.ajax( {
+                    url:"https://api-tree.herokuapp.com/inputs",
+                    data:JSON.stringify(myWords),
+                    contentType: "application/json",
+                    type:"POST",
+                    accessControlAllowOrigin:"*"
+                }, function( data ) {
+                  console.log(data);
+                });
+                //generate();
+            }, 500);
+        }
+    }
+
+
   algo.init(tree);
 // Regarder si mots sur API et les générer ( peut être mettre un delai)
-  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-26T09:39:44.869Z").done(function(data){
+
+  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
+      console.log(data.inputs);
     for (var i=0; i<data.inputs.length; i++){
-      algo.generate(data.inputs[i]);
+      algo.generate(data.inputs[i].words, false);
     }
+    tree.redraw();
   });
   // une foi générer se connecter à socket pour récupérer les suivants.
   // A fixer :-)
   var socket = io.connect('https://api-tree.herokuapp.com/inputs');
   socket.on('new_inputs', function (data) {
     // New Branch
-    console.log("data : ", data);
-    // algo.generate(data);
+    console.log("socket data : ", data);
+    algo.generate(data);
     //socket.emit('my other event', { my: 'data' });
     //algo(tree_global).generate(data);
   });

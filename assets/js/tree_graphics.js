@@ -115,14 +115,16 @@ var leaf = function (settings, core){
     angle:90,
     leafRotation:0,
     type: "leaf",
+    animationStade:0,
     init: function(){
-      this.animate({
-    		animationStade: 100
-    	   }, {
-    		easing: "ease-out-quad",
-        duration: 6000
-    	});
-
+        if(settings.animationStade!=0){
+        this.animate({
+              animationStade: 100
+             }, {
+              easing: "ease-out-quad",
+          duration: 6000
+          });
+        }
     },
     draw: function(){
       var canvas = this.core.canvas,
