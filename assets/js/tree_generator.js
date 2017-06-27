@@ -51,7 +51,6 @@ var algo =  {
   },
   generate: function(datas, animate=true){
     // console.log("======START GEN====");
-    // console.log(datas);
     this.nbInput ++;
     this.animate = animate;
     if(this.nbInput%70 === 0)
@@ -59,9 +58,9 @@ var algo =  {
     this.parseInput(datas);
     if(this.nbInput == 1){
       // console.log('init trunk')
-      this.initTrunk();
-      this.addPoints();
+      this.startAnimation(this);
     }else{
+    console.log(this.nbInput);
       var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
       this.getParams(action);
       // console.log(this.params);
@@ -69,6 +68,15 @@ var algo =  {
     }
 
     // console.log("======END GEN====");
+  },
+  startAnimation: function(thisParent){
+    $('.startAnimation').css("display", "block");
+    setTimeout(function(){
+      $('.startAnimation').css("display", "none");
+      // console.log(thisParent);
+      thisParent.initTrunk();
+      thisParent.addPoints();
+    }, 2800);
   },
   addPoints: function(){
     var points = [];
