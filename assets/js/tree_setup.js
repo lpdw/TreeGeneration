@@ -2,8 +2,7 @@ oCanvas.domReady(function () {
   var HTMLcanvas = document.getElementById("tree"),
   HTMLbutton = document.getElementById("button"),
   HTMLzoombutton = document.getElementById("zoom"),
-  HTMLdezoombutton = document.getElementById("dezoom"),
-  HTMLleafbutton = document.getElementById("leaf");
+  HTMLdezoombutton = document.getElementById("dezoom");
   var branches = [];
 
   HTMLcanvas.height = window.innerHeight;
@@ -33,10 +32,6 @@ oCanvas.domReady(function () {
   HTMLdezoombutton.addEventListener("click",function(){
       oCanvas.Zoom.setLevel(oCanvas.Zoom.level + 50);
       tree.redraw();
-  })
-  HTMLleafbutton.addEventListener("click", function(){
-    generateLeaf();
-
   })
 var leafs = [];
 leafs["square"] = [];
@@ -108,12 +103,11 @@ function randomBranches(){
   //   // console.log(i);
   // });
 
-  var iteration = 200;
+  var iteration;
   HTMLbutton.addEventListener("click", function(e){
-
         // generate();
+          iteration = 1;
             generate();
-            iteration = 1;
   });
     function generate(){
         // iteration--;
