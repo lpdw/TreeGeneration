@@ -1,4 +1,3 @@
-
 var words = {
 Tristesse: 1,
 Peur:2,
@@ -50,26 +49,39 @@ var algo =  {
   init: function(tree){
     this.treeGlobal = tree;
   },
-  generate: function(datas, animate=true){
+  generate: function(datas, animate=true, init = false){
     // console.log("======START GEN====");
-    // console.log(datas);
     this.nbInput ++;
     this.animate = animate;
     if(this.nbInput%70 === 0)
       this.enlarge(this.treeGlobal.children[0]);
     this.parseInput(datas);
     if(this.nbInput == 1){
-      // console.log('init trunk')
-      this.initTrunk();
-      this.addPoints();
+      if (!init) {
+        // S'il n'y a pas de données de base alors c'est le premier input donc on lance l'animation
+        this.startAnimation(this);
+      } else {
+        // Sinon on initialise le tronc et les points
+        this.initTrunk();
+        this.addPoints();
+      }
     }else{
+      $('.startAnimation').css("display", "none");
       var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
       this.getParams(action);
-      // console.log(this.params);
       this[action]();
     }
 
     // console.log("======END GEN====");
+  },
+  startAnimation: function(thisParent){
+    $('.startAnimation').css("display", "block");
+    setTimeout(function(){
+      $('.startAnimation').css("display", "none");
+      // Une fois l'animation terminée, on peut initialiser le tronc et les points
+      thisParent.initTrunk();
+      thisParent.addPoints();
+    }, 2800);
   },
   addPoints: function(){
     var points = [];
