@@ -45,6 +45,7 @@ var algo =  {
   minValue:0,
   params:{width:5,color:white, size:20, freq:10,amplitude:5},
   animate:true,
+  goldenLeafs:[],
   init: function(tree){
     this.treeGlobal = tree;
   },
@@ -92,24 +93,38 @@ var algo =  {
     this.currentBranche.addPoints(points, this.animate);
   },
   addLeaf: function(){
+    var shape = "circle";
+    var shapeFill = false
+    if (this.nbInput%150===0){
+      shape = "square";
+      shapeFill = true;
+    }else{
+      if(this.avgValue>6)
+        shape = "square";
+      if(this.inputValue%2===0)
+        shapeFill = true;
+    }
       var leaf = this.treeGlobal.display.leaf({
         strokeWidth:this.params.width/2,
         strokeColor:this.params.color,
         startPoint:((this.inputValue/40)*100)%100 ,
         size:this.params.size,
-        angle:((this.inputValue/101) * 360) - 90,
-        shape: this.avgValue > 6 ? "square" : "circle",
-        shapeFill: this.inputValue%2 === 0,
+        angle:-((this.inputValue/101) * 360),
+        shape: shape,
+        shapeFill: shapeFill,
         animationStade: this.animate ? 0:100,
       });
+      if(this.nbInput%150===0)
+        this.goldenLeafs.push(leaf);
     this.currentBranche.addChildcustom(leaf);
   },
   createBranche: function(){
+    // console.log((this.avgValue/20)*100);
     var branche =  this.treeGlobal.display.branche({
       strokeWidth:this.params.width,
       strokeColor:this.params.color,
       points: [{x:0,y:0}],
-      startPoint: ((this.inputValue/50)*100)%100,
+      startPoint: (this.avgValue/20)*100,
       maxBranches: 10,
       maxLeafs: 15,
       direction: this.nbBranches%2 === 0 ? 1 : -1,
@@ -135,7 +150,10 @@ var algo =  {
         this.params.width=9;
       else
         this.params.width=8;
-      if(this.containOneofWords(words.Peur, words.Tristesse))
+      if(this.nbInput%150 === 0){
+        this.params.color = gold;
+      }
+      else if(this.containOneofWords(words.Peur, words.Tristesse))
         this.params.color = colors[2];
       else if(this.containOneofWords(words.Connaissance, words.Toucher, words.Nature) && this.avgValue < 15 )
         this.params.color = colors[3];
@@ -154,7 +172,10 @@ var algo =  {
         this.params.color = colors[6];
       }
     if(type==="addLeaf"){
-      if(this.containOneofWords(words.Tristesse, words.Joie))
+      if(this.nbInput%150 === 0){
+        this.params.size = 25;
+      }
+      else if(this.containOneofWords(words.Tristesse, words.Joie))
         this.params.size = 10;
       else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
         this.params.size = 12;
@@ -224,13 +245,19 @@ var algo =  {
     this.nbBranches++;
   },
   getBrancheAndAction: function(base){
-    // console.log(base);
-    if(base.points.length < base.maxPoints/15 || (base.points.length < base.maxPoints/4 && this.containOneofWords(words.Outil,
+    this.currentBranche = base;
+    if(this.nbInput%150 === 0){
+      if((base.nbLeafs < base.maxLeafs && base.points.length < base.maxPoints/5) || base.branches.length === 0){
+        return "addLeaf";
+      }else{
+        return this.getBrancheAndAction(base.branches[(this.nbInput/150)%base.branches.length]);
+      }
+    }
+    if(base.points.length < base.maxPoints/15 || (base.points.length < base.maxPoints/5 && this.containOneofWords(words.Outil,
                                                                       words.Do_It_Yourself,
                                                                       words.Virtuel,
                                                                       words.Nature))){
-      // console.log("Action: Branch too small adding points");
-      this.currentBranche = base;
+      // this.currentBranche = base;
       return "addPoints";
     }
     if (base ===this.treeGlobal.children[0] ){
@@ -242,7 +269,7 @@ var algo =  {
           return this.getBrancheAndAction(base.branches[0]);
         }
         else{
-          this.currentBranche = base;
+          // this.currentBranche = base;
           // console.log("Action: Creating branch on trunk (0)");
           return "createBranche";
         }
@@ -253,7 +280,7 @@ var algo =  {
           {// console.log("Branche 1");
           return this.getBrancheAndAction(base.branches[1]);}
         else{
-          this.currentBranche = base;
+          // this.currentBranche = base;
           // console.log("Action: Creating branch on trunk (1)");
           return "createBranche";
         }
@@ -264,7 +291,7 @@ var algo =  {
           {// console.log("Branche 2");
           return this.getBrancheAndAction(base.branches[2]);}
         else{
-          this.currentBranche = base;
+          // this.currentBranche = base;
           // console.log("Action: Creating branch on trunk (2)");
           return "createBranche";
         }
@@ -275,7 +302,7 @@ var algo =  {
           {// console.log("Branche 3");
           return this.getBrancheAndAction(base.branches[3]);}
         else{
-          this.currentBranche = base;
+          // this.currentBranche = base;
           // console.log("Action: Creating branch on trunk (3)");
           return "createBranche";
         }
@@ -287,25 +314,27 @@ var algo =  {
           return this.getBrancheAndAction(base.branches[4]);
         }
         else{
-          this.currentBranche = base;
+          // this.currentBranche = base;
           // console.log("Action: Creating branch on trunk (4)");
           return "createBranche";
         }
       }
     }
-    if(base.points.length < base.maxPoints
-            && this.containOneofWords(words.Entraide, words.Toucher))
+
+    if (base.maxBranches > base.branches.length && this.avgValue < 10)
       {
-        this.currentBranche = base;
-        // console.log("adding points presence of words");
-        return "addPoints";
-      }
-    else if (base.maxBranches > base.branches.length && this.avgValue < 5)
-      {
-        this.currentBranche = base;
+        console.log(this.avgValue, this.nbInput);
+        // this.currentBranche = base;
         // console.log("creating branche avgValue small enough");
         return "createBranche";
       }
+      else if(base.points.length < base.maxPoints
+              && this.containOneofWords(words.Entraide, words.Toucher))
+        {
+          this.currentBranche = base;
+          // console.log("adding points presence of words");
+          return "addPoints";
+        }
     else if (base.maxLeafs > base.nbLeafs && this.containOneofWords(words.Joie,
                                                     words.Connaissance,
                                                     words.Toucher,
@@ -317,7 +346,7 @@ var algo =  {
                                                     words.Narration
                                                      ))
       {
-        this.currentBranche = base;
+        // this.currentBranche = base;
         // console.log("adding leaf presence of words");
         return "addLeaf";
       }
@@ -329,7 +358,7 @@ var algo =  {
             return this.getBrancheAndAction(base.branches[base.branches.length - 1]);
       }
 
-      this.currentBranche = base;
+      // this.currentBranche = base;
       // console.log("create Branche default");
       return "createBranche";
     }
@@ -341,13 +370,15 @@ var algo =  {
     }
   },
   enlarge: function(branche){
-    console.log('Enlarge');
-    branche.strokeWidth += 2.5;
+
+    // branche.strokeWidth += 2.5;
+    branche.strokeWidth += 15 / oCanvas.Zoom.level;
     for(var i = branche.branches.length - 1; i>=0; i--){
-      this.enlarge(branche.branches[i]);
       for(var j = 0; j < branche.branches[i].leaves.length; j++) {
-          branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
+        // branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
+          branche.branches[i].leaves[j].size +=  15 / oCanvas.Zoom.level;
       }
+      this.enlarge(branche.branches[i]);
     }
 },
 parseInput: function(words){
