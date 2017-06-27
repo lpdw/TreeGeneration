@@ -139,7 +139,7 @@ var leaf = function (settings, core){
 
         if (this.parent.points != undefined && this.startPoint && !this.isInit){
           this.leafOriginPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
-          console.log("new leaf");
+          //console.log("new leaf");
           this.isInit = true;
         }
         if(this.leafOriginPoint  === undefined)
@@ -177,7 +177,7 @@ var leaf = function (settings, core){
                               center.drawX(),
                               center.drawY(),
                               oCanvas.Zoom.convert(ellipsesize));
-          grd.addColorStop(1,"white");
+          grd.addColorStop(1,this.strokeColor === gold ? gold: "white");
           grd.addColorStop(0,"transparent");
           canvas.fillStyle = grd;
           canvas.arc(center.drawX(), center.drawY(), oCanvas.Zoom.convert(ellipsesize), 0, Math.PI * 2, false);
