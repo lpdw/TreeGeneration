@@ -50,7 +50,7 @@ var algo =  {
   init: function(tree){
     this.treeGlobal = tree;
   },
-  generate: function(datas, animate=true){
+  generate: function(datas, animate=true, init = false){
     // console.log("======START GEN====");
     this.nbInput ++;
     this.animate = animate;
@@ -58,13 +58,18 @@ var algo =  {
       this.enlarge(this.treeGlobal.children[0]);
     this.parseInput(datas);
     if(this.nbInput == 1){
-      // console.log('init trunk')
-      this.startAnimation(this);
+      if (!init) {
+        // S'il n'y a pas de données de base alors c'est le premier input donc on lance l'animation
+        this.startAnimation(this);
+      } else {
+        // Sinon on initialise le tronc et les points
+        this.initTrunk();
+        this.addPoints();
+      }
     }else{
-    console.log(this.nbInput);
+      $('.startAnimation').css("display", "none");
       var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
       this.getParams(action);
-      // console.log(this.params);
       this[action]();
     }
 
@@ -74,7 +79,7 @@ var algo =  {
     $('.startAnimation').css("display", "block");
     setTimeout(function(){
       $('.startAnimation').css("display", "none");
-      // console.log(thisParent);
+      // Une fois l'animation terminée, on peut initialiser le tronc et les points
       thisParent.initTrunk();
       thisParent.addPoints();
     }, 2800);
