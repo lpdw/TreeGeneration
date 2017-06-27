@@ -145,6 +145,7 @@ function randomBranches(){
       algo.generate(data.inputs[i].words, false);
     }
     tree.redraw();
+    $("#loader").fadeOut(500);
   });
   // une foi générer se connecter à socket pour récupérer les suivants.
   // A fixer :-)
