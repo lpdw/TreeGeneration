@@ -1,4 +1,3 @@
-
 var words = {
 Tristesse: 1,
 Peur:2,
