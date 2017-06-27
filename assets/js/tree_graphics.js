@@ -76,16 +76,16 @@ Point.prototype.set = function(point){
   this.y = point.y;
 }
 
-var cyan = 'hsla(187, 47%, 55%, 0.95)',
-blue = 'hsla(207, 82%, 66%, 0.95)',
-purple = 'hsla(286, 90%, 47%, 0.95)',
-green = 'hsla(95, 68%, 62%, 0.95)',
-red1 = 'hsla(355, 75%, 55%, 0.95)',
-red2 = 'hsla(5, 48%, 51%, 0.95)',
-orange1 = 'hsla(29, 84%, 61%, 0.95)',
-orange2 = 'hsla(39, 90%, 69%, 0.95)',
-white = 'hsla(255, 85%, 98%, 0.95)',
-black = 'hsla(220,13%,18%, 1)',
+var cyan = 'hsl(187, 47%, 55%)',
+blue = 'hsl(207, 82%, 66%)',
+purple = 'hsl(286, 90%, 47%)',
+green = 'hsl(95, 68%, 62%)',
+red1 = 'hsl(355, 75%, 55%)',
+red2 = 'hsl(5, 48%, 51%)',
+orange1 = 'hsl(29, 84%, 61%)',
+orange2 = 'hsl(31, 90%, 69%)',
+white = 'hsl(255, 85%, 98%)',
+black = 'hsl(220,13%,18%)',
 gold = 'hsl(43, 100%, 57%)';
 var colors = [cyan, blue, purple, green, red1, red2, orange1, orange2, white, gold];
 var shapes = ["square", "circle"];
@@ -135,7 +135,7 @@ var leaf = function (settings, core){
         zoomOffset = oCanvas.Zoom.offset,
         progress = this.animationStade / 100,
         invProgress = 1 - progress,
-        size = this.size * progress/ (oCanvas.Zoom.level/100);
+        size = this.size * progress/ (oCanvas.Zoom.level/1000);
 
         if (this.parent.points != undefined && this.startPoint && !this.isInit){
           this.leafOriginPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
@@ -206,7 +206,7 @@ var leaf = function (settings, core){
             //canvas.setTransform(1, 0, 0, 1, 0, 0);
         }
         else if(this.shape === "circle") {
-          // size = size/2;
+          size = size/1.2;
 
           var center = new Point(end_line.x + (size * Math.cos(angle)), end_line.y + (size * Math.sin(angle)) );
           canvas.arc(center.drawX(), center.drawY(), oCanvas.Zoom.convert(size), 0, Math.PI * 2, false);
@@ -272,9 +272,14 @@ var branche = function (settings, core){
     draw: function(){
       var canvas = this.core.canvas;
       if (this.parent.points != undefined && settings.startPoint && !this.isInit){
-          this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          this.originPoint = this.parent.points[Math.round((settings.startPoint / 100) * this.parent.points.length - 1)];
           var origin = this.originPoint;
           // console.log(settings.points);
+          if(origin == undefined || settings.points == undefined){
+            console.log("this:",this);
+            console.log("SP:",settings.startPoint);
+            (function () { console.log(new Error().stack); })();
+          }
           this.points = settings.points.map(function(point){
             return {x: (origin.x + point.x), y: (origin.y + point.y)};
           });
