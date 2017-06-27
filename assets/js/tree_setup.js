@@ -15,7 +15,7 @@ oCanvas.domReady(function () {
   	background: black,
     drawEachFrame : true,
     clearEachFrame : true,
-    fps: 20,
+    fps: 30,
 
   });
 
@@ -94,6 +94,14 @@ function randomBranches(){
  // Faire touner l'algo de génération avec les nouvelles données*/
   // algo.init(tree);
   // algo.generate(tree);
+  // var i = 0;
+  // tree.setLoop(function () {
+  //
+  //   for(var j = 0; j < leafs["square"].length; j++){
+  //   }
+  //   i = i > 360 ? 0 : i+1;
+  //   // console.log(i);
+  // });
 
   var iteration;
   HTMLbutton.addEventListener("click", function(e){
@@ -156,14 +164,4 @@ function randomBranches(){
     //algo(tree_global).generate(data);
   });
   // algo.generate({inputs: [21,14,23]});
-
-  var i = 0;
-  tree.setLoop(function () {
-
-    for(var j = 0; j < algo.goldenLeafs.length; j++){
-      algo.goldenLeafs[j].leafRotation = i;
-    }
-    i = i > 360 ? 0 : i+1;
-  });
-  tree.timeline.start();
 });
