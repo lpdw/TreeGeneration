@@ -120,16 +120,16 @@ var algo =  {
     this.currentBranche.addChildcustom(leaf);
   },
   createBranche: function(){
-    // console.log((this.avgValue/20)*100);
+      console.log((this.avgValue/20)*100);
     var branche =  this.treeGlobal.display.branche({
       strokeWidth:this.params.width,
       strokeColor:this.params.color,
       points: [{x:0,y:0}],
       startPoint: (this.avgValue/20)*100,
-      maxBranches: 10,
-      maxLeafs: 15,
+      maxBranches: 25,
+      maxLeafs: 10,
       direction: this.nbBranches%2 === 0 ? 1 : -1,
-      maxPoints: 1000 - (this.nbBranches),
+      maxPoints: 600 - (this.nbBranches),
     });
     this.currentBranche.addChildcustom(branche);
         // console.log('new branch', branche);
@@ -254,6 +254,7 @@ var algo =  {
         return this.getBrancheAndAction(base.branches[(this.nbInput/150)%base.branches.length]);
       }
     }
+
     if(base.points.length < base.maxPoints/15 || (base.points.length < base.maxPoints/5 && this.containOneofWords(words.Outil,
                                                                       words.Do_It_Yourself,
                                                                       words.Virtuel,
@@ -261,6 +262,7 @@ var algo =  {
       // this.currentBranche = base;
       return "addPoints";
     }
+
     if (base ===this.treeGlobal.children[0] ){
       if(this.containOneofWords(words.Tristesse, words.Ignorance))
       {
@@ -324,7 +326,6 @@ var algo =  {
 
     if (base.maxBranches > base.branches.length && this.avgValue < 10)
       {
-        console.log(this.avgValue, this.nbInput);
         // this.currentBranche = base;
         // console.log("creating branche avgValue small enough");
         return "createBranche";
@@ -377,7 +378,7 @@ var algo =  {
     for(var i = branche.branches.length - 1; i>=0; i--){
       for(var j = 0; j < branche.branches[i].leaves.length; j++) {
         // branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
-          branche.branches[i].leaves[j].size +=  15 / oCanvas.Zoom.level;
+          branche.branches[i].leaves[j].size +=  2 / oCanvas.Zoom.level;
       }
       this.enlarge(branche.branches[i]);
     }
