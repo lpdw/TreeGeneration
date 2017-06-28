@@ -16,74 +16,28 @@ body{
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background: hsla(220,13%,18%, 1);
+          background: hsla(220,13%,18%, 1);
+  /*background: white;*/
 }
-
+.canvas{
+  min-height: 100vh;
+  min-width: calc(9/16 *100vh);
+}
+.canvas>*{
+  position:absolute;
+}
 #tree{
+
   z-index: 50;
 }
 div.button{
   z-index: 10000;
 }
-@keyframes plantation {
-    0% {top: 0;}
-    60% {background-color: #2a96ed;}
-    75% {}
-    100% {top: 95%;}
-}
-
 .startAnimation {
   display: none;
-  position: absolute;
-  left: 50%;
-  top: 95%;
-  width: 50px;
-  height: 50px;
-  /*display: -webkit-box;
-  display: -ms-flexbox;*/
-
-  /*display: flex;*/
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-
-  background-color: #2a96ed;
-  -webkit-border-top-left-radius: 0;
-  -webkit-border-top-right-radius: 75px;
-  -webkit-border-bottom-right-radius: 75px;
-  -webkit-border-bottom-left-radius: 75px;
-  -webkit-transform:rotate(45deg);
-  box-shadow: 1px 1px 7px #1a1a1a;
-
-  animation: plantation 3s ease-out;
-  /*border-radius: 50%;*/
-  z-index: 999;
-  -webkit-transition: top 1.2s linear;
-  transition: top 1.2s linear;
+  height: 100% !important;
 }
-.clipped {
-  z-index: 1000;
-  position: absolute;
-  /*left: 50%;*/
-  width: 50px;
-  height: 50px;
-	-webkit-transition: -webkit-transform 1.4s ease-in, background 0.3s ease-in;
-	transition: transform 1.4s ease-in, background 0.3s ease-in;
-  box-sizing: border-box;
-}
-
-.startAnimation .clipped {
-  background-color: #2a96ed;
-}
-
-#loader {
+#loader, .startAnimation {
     z-index: 100;
     position: fixed;
     top: 0;
@@ -91,7 +45,7 @@ div.button{
     height: 100vh;
     background: hsla(220,13%,18%, 1);
 }
-#loader span {
+#loader span, .startAnimation span {
     font-family: "Arial";
     color: #FFF;
     position: absolute;
@@ -99,8 +53,7 @@ div.button{
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
-.wrap {
+#loader .wrap {
   position: absolute;
   width: 100px;
   height: 200px;
@@ -110,7 +63,8 @@ div.button{
   margin-top: -100px;
 }
 
-.drop {
+
+#loader .drop {
   width: 40px;
   height: 40px;
   left: 50%;
@@ -122,8 +76,7 @@ div.button{
 .drop circle {
   fill: #2a96ed;
 }
-
-.drop-outer {
+#loader .drop-outer {
   position: absolute;
   box-sizing: border-box;
   /* border: 1px solid #333; */
@@ -138,7 +91,7 @@ div.button{
   -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
 }
 
-.ripple {
+#loader .ripple {
   position: absolute;
   box-sizing: border-box;
   width: 240px;
@@ -199,6 +152,102 @@ div.button{
   animation: border 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s infinite;
 }
 
+/* starting animation */
+
+.startAnimation .ripple-start {
+  position: absolute;
+  box-sizing: border-box;
+  width: 240px;
+  height: 240px;
+  top: 89%;
+  left: -70px;
+  perspective: 100;
+  transform: rotateX(65deg);
+}
+.startAnimation .wrap {
+  position: absolute;
+  width: 100px;
+  /*height: 100%;;*/
+  left: 50%;
+  margin-left: -50px;
+  top: 0;
+  bottom: 0;
+  margin-top: -100px;
+}
+.startAnimation .drop {
+  width: 40px;
+  height: 40px;
+  left: 50%;
+  margin-left: -20px;
+  position: absolute;
+  top: -40px;
+  animation: dropStart 2.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s;
+}
+.startAnimation .drop-outer {
+  position: absolute;
+  box-sizing: border-box;
+  /* border: 1px solid #333; */
+  width: 100px;
+  height: 100%;
+  overflow: hidden;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  background-clip: padding-box;
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+}
+
+.ripple-start .ripple-svg-start {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  opacity: 0;
+}
+
+.ripple-start .ripple-svg-start circle {
+   fill: none;
+   stroke: #2a96ed;
+   stroke-width: 10px;
+   stroke-alignment: inner;
+}
+
+.ripple-1-start {
+  animation: ripple-start 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s infinite;
+}
+
+.ripple-1-start .ripple-svg-start {
+  animation: fade-in-out 6s linear 0s infinite;
+}
+
+.ripple-1-start .ripple-svg-start circle {
+  animation: border 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s infinite;
+}
+
+.ripple-2-start {
+  animation: ripple-start 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s infinite;
+}
+
+.ripple-2-start .ripple-svg-start {
+  animation: fade-in-out 6s linear 0.2s infinite;
+}
+
+.ripple-2-start .ripple-svg-start circle {
+  animation: border 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s infinite;
+}
+
+.ripple-3-start {
+  animation: ripple-start 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s infinite;
+}
+
+.ripple-3-start .ripple-svg-start {
+  animation: fade-in-out 6s linear 0.35s infinite;
+}
+
+.ripple-3-start .ripple-svg-start circle {
+  animation: border 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s infinite;
+}
+
 
 
 @keyframes drop {
@@ -234,4 +283,20 @@ div.button{
   0% { stroke-width: 6px }
   42% { stroke-width: 6px }
   100% {stroke-width: 2px }
+}
+
+
+/* starting animation */
+@keyframes ripple-start {
+  0% { transform: rotateX(65deg) scale3d(0.2, 0.2, 0.2) }
+  42% { transform: rotateX(65deg) scale3d(0.2, 0.2, 0.2) }
+  100% { transform: rotateX(65deg) scale3d(0.9, 0.9, 0.9) }
+}
+@keyframes dropStart {
+  0% {
+    top: -40px;
+  }
+  100% {
+    top: 97%;
+  }
 }

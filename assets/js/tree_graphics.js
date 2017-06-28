@@ -15,7 +15,7 @@ oCanvas.Zoom = {
   margin:0,
   Init: function(canvas, level){
     this.canvas = canvas;
-    this.margin = 10;
+    this.margin = 50;
     this.setLevel(level);
   },
   setLevel: function(newLevel){
@@ -76,16 +76,16 @@ Point.prototype.set = function(point){
   this.y = point.y;
 }
 
-var cyan = 'hsla(187, 47%, 55%, 0.95)',
-blue = 'hsla(207, 82%, 66%, 0.95)',
-purple = 'hsla(286, 90%, 47%, 0.95)',
-green = 'hsla(95, 68%, 62%, 0.95)',
-red1 = 'hsla(355, 75%, 55%, 0.95)',
-red2 = 'hsla(5, 48%, 51%, 0.95)',
-orange1 = 'hsla(29, 84%, 61%, 0.95)',
-orange2 = 'hsla(39, 90%, 69%, 0.95)',
-white = 'hsla(255, 85%, 98%, 0.95)',
-black = 'hsla(220,13%,18%, 1)',
+var cyan = 'hsl(187, 47%, 55%)',
+blue = 'hsl(207, 82%, 66%)',
+purple = 'hsl(286, 90%, 47%)',
+green = 'hsl(95, 68%, 62%)',
+red1 = 'hsl(355, 75%, 55%)',
+red2 = 'hsl(5, 48%, 51%)',
+orange1 = 'hsl(29, 84%, 61%)',
+orange2 = 'hsl(31, 90%, 69%)',
+white = 'hsl(255, 85%, 98%)',
+black = 'hsl(220,13%,18%)',
 gold = 'hsl(43, 100%, 57%)';
 var colors = [cyan, blue, purple, green, red1, red2, orange1, orange2, white, gold];
 var shapes = ["square", "circle"];
@@ -135,7 +135,7 @@ var leaf = function (settings, core){
         zoomOffset = oCanvas.Zoom.offset,
         progress = this.animationStade / 100,
         invProgress = 1 - progress,
-        size = this.size * progress/ (oCanvas.Zoom.level/100);
+        size = this.size * progress/ (oCanvas.Zoom.level/1000);
 
         if (this.parent.points != undefined && this.startPoint && !this.isInit){
           this.leafOriginPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
@@ -164,12 +164,12 @@ var leaf = function (settings, core){
         canvas.closePath();
         if(progress != 1){
           canvas.beginPath();
-          var dist = size;
-          if (this.shape === "square")
-            dist /= 2;
+          var dist = size/2;
+          // if (this.shape === "square")
+          //   dist /= 2;
           var center = new Point(end_line.x + (dist *Math.cos(angle))
                                     ,end_line.y + (dist * Math.sin(angle))) ;
-          var ellipsesize = (Math.sin(progress*6 ) +1) * (5*invProgress + 10) + dist;
+          var ellipsesize = ((Math.sin(progress*6 ) +1) * (5*invProgress + 10) + dist) * oCanvas.Zoom.level/850;
           var grd = canvas.createRadialGradient(
                               center.drawX(),
                               center.drawY(),
@@ -206,7 +206,7 @@ var leaf = function (settings, core){
             //canvas.setTransform(1, 0, 0, 1, 0, 0);
         }
         else if(this.shape === "circle") {
-          // size = size/2;
+          size = size/2;
 
           var center = new Point(end_line.x + (size * Math.cos(angle)), end_line.y + (size * Math.sin(angle)) );
           canvas.arc(center.drawX(), center.drawY(), oCanvas.Zoom.convert(size), 0, Math.PI * 2, false);
@@ -272,7 +272,7 @@ var branche = function (settings, core){
     draw: function(){
       var canvas = this.core.canvas;
       if (this.parent.points != undefined && settings.startPoint && !this.isInit){
-          this.originPoint = this.parent.points[Math.round((settings.startPoint) / 100 * (this.parent.points.length - 1 ) )];
+          this.originPoint = this.parent.points[Math.round((settings.startPoint / 100) * this.parent.points.length - 1)];
           var origin = this.originPoint;
           // console.log(settings.points);
           this.points = settings.points.map(function(point){
@@ -297,7 +297,6 @@ var branche = function (settings, core){
         canvas.strokeStyle = this.strokeColor;
         canvas.lineJoin = this.join;
         canvas.lineCap = this.cap;
-
 
         var progress = this.animationStade / 100;
         var invProgress = 1 - progress;
@@ -334,20 +333,26 @@ var branche = function (settings, core){
         }
         canvas.stroke();
         canvas.closePath();
+
         if(progress != 1){
           canvas.beginPath();
-          var size = (Math.sin(invProgress*20) + 2) * (20*invProgress + 10);
+          canvas.lineWidth = canvas.lineWidth;
+          canvas.strokeStyle = canvas.strokeStyle;
+          canvas.lineJoin = canvas.lineJoin;
+          canvas.lineCap = canvas.lineCap;
+          var fac = oCanvas.Zoom.level / 700;
+          var size = (Math.sin(invProgress*20) + 5) * (20*invProgress + 10) * fac ;
           var grd = canvas.createRadialGradient(
                               lastPoint.drawX(),
                               lastPoint.drawY(),
-                              oCanvas.Zoom.convert(size/12),
+                              oCanvas.Zoom.convert(size/6),
                               lastPoint.drawX(),
                               lastPoint.drawY(),
-                              oCanvas.Zoom.convert(size/4));
+                              oCanvas.Zoom.convert(size/2));
           grd.addColorStop(0,"transparent");
           grd.addColorStop(1,"white");
           canvas.fillStyle = grd;
-          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size/4), 0, Math.PI * 2, false);
+          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size/2), 0, Math.PI * 2, false);
           canvas.fill();
           canvas.closePath();
           canvas.beginPath();
@@ -356,14 +361,14 @@ var branche = function (settings, core){
           //progress = progress == 0 ? 0.0001 : progress;
           var max = Math.floor(150 * invProgress);
           var firstPoint = new Point();
-          var start = max > 20 ? max - 20 : 0;
+          var start = max > 40 ? max - 40 : 0;
 
           for (i = start; i<= max; i++) {
             var angle =  0.1 * Math.pow(i,(1 - progress));
             //var angle =  Math.pow(i,i / 100);
 
-             currentPoint.x=lastPoint.x + (.5*i+angle * invProgress)*Math.cos(angle);
-             currentPoint.y=lastPoint.y + (.5*i+angle * invProgress)*Math.sin(angle);
+             currentPoint.x=lastPoint.x + (.5*i+angle * invProgress * fac /2)*Math.cos(angle);
+             currentPoint.y=lastPoint.y + (.5*i+angle * invProgress * fac /2)*Math.sin(angle);
 
             if(i === start ){
                 firstPoint.set(currentPoint);

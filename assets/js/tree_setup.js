@@ -1,5 +1,6 @@
 oCanvas.domReady(function () {
   var HTMLcanvas = document.getElementById("tree"),
+  HTMLbuttonLots = document.getElementById("buttonLots"),
   HTMLbutton = document.getElementById("button"),
   HTMLzoombutton = document.getElementById("zoom"),
   HTMLdezoombutton = document.getElementById("dezoom");
@@ -9,21 +10,25 @@ oCanvas.domReady(function () {
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
   // Initier le zoom pour qu'il puisse être utiliser lors du dessin
   oCanvas.Zoom.Init(HTMLcanvas, 200);
-
-  var tree = oCanvas.create({
+  var oCanvasparams = {
   	canvas: "#tree",
   	background: black,
     drawEachFrame : true,
     clearEachFrame : true,
-    fps: 30,
-
-  });
+    fps: 20,
+  };
+  // console.log(HTMLcanvasAnims.getContext('2d'));
+  // console.log(oCanvas.AnimContext);
+  var tree = oCanvas.create(oCanvasparams);
+  // Initier l'algo avec l'objet oCanvas;
+  algo.init(tree);
 
 
   window.onresize = function(event) {
     HTMLcanvas.height = window.innerHeight;
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
-    tree.redraw();
+    tree = oCanvas.create(oCanvasparams);
+    // initTree();
   };
   HTMLzoombutton.addEventListener("click",function(){
       oCanvas.Zoom.setLevel(oCanvas.Zoom.level - 50);
@@ -69,12 +74,11 @@ function randomBranches(){
     else
       branches[Math.arrayRand(branches.length)].addChildcustom(branche);
     branches.push(branche);
-    tree.redraw();
+    // tree.redraw();
   }
 }
 
   function generateLeaf(){
-
     // for (var i = 0; i<200; i++){
       var leaf = tree.display.leaf({
         strokeWidth:Math.rand(1000,2000),
@@ -89,57 +93,30 @@ function randomBranches(){
     leafs[leaf.shape].push(leaf);
     // tree.timeline.start();
     // }
-
   }
  // Faire touner l'algo de génération avec les nouvelles données*/
   // algo.init(tree);
   // algo.generate(tree);
-  // var i = 0;
-  // tree.setLoop(function () {
-  //
-  //   for(var j = 0; j < leafs["square"].length; j++){
-  //   }
-  //   i = i > 360 ? 0 : i+1;
-  //   // console.log(i);
-  // });
+  var i = 0;
+  tree.setLoop(function () {
 
-  var iteration;
-  HTMLbutton.addEventListener("click", function(e){
-        // generate();
-          iteration = 1;
-            generate();
-  });
-    function generate(){
-        // iteration--;
-        if(iteration>0){
-            setTimeout(function(){
-                var myWords= {"words":[]};
-
-                var keys = Object.keys(words);
-
-                for(var j =Math.rand(4,6); j >= 0; j--){
-                  myWords["words"].push(words[keys[ keys.length * Math.random() << 0]]);
-                }
-                // algo.generate(myWords);
-                console.log(myWords.words);
-                console.log(JSON.stringify(myWords));
-                $.ajax( {
-                    url:"https://api-tree.herokuapp.com/inputs",
-                    data:JSON.stringify(myWords),
-                    contentType: "application/json",
-                    type:"POST",
-                    accessControlAllowOrigin:"*"
-                }, function( data ) {
-                  console.log(data);
-                });
-                //generate();
-            }, 500);
-        }
+    for(var j = 0; j < algo.goldenLeaves.length; j++){
+      algo.goldenLeaves[j].leafRotation = i;
     }
-  algo.init(tree);
-// Regarder si mots sur API et les générer ( peut être mettre un delai)
+    i = i > 360 ? 0 : i+1;
+  });
 
-  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
+function initTree(){
+  // Regarder si mots sur API et les générer ( peut être mettre un delai)
+  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
+    console.log(data.inputs);
+    for (var i=0; i<data.inputs.length; i++){
+      algo.generate(data.inputs[i].words, false, true);
+    }
+    tree.redraw();
+    $("#loader").fadeOut(500);
+  });
+  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-20T19:16:26.207Z"+(new Date())).done(function(data){
   //   console.log(data.inputs);
   //   for (var i=0; i<data.inputs.length; i++){
   //     algo.generate(data.inputs[i].words, false, true);
@@ -147,13 +124,55 @@ function randomBranches(){
   //   tree.redraw();
   //   $("#loader").fadeOut(500);
   // });
-  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-20T15:00:30.021Z").done(function(data){
-    for (var i=0; i<data.inputs.length; i++){
-      algo.generate(data.inputs[i].words, false, true);
-    }
-    tree.redraw();
-    $("#loader").fadeOut(500);
+}
+
+  var iteration;
+  HTMLbutton.addEventListener("click", function(e){
+        // generate();
+        iteration = 1;
+            generate(true);
   });
+  HTMLbuttonLots.addEventListener("click", function(e){
+        // generate();
+          iteration = 2000;
+            generateLocal(false);
+  });
+  function generateLocal(bool){
+    iteration--;
+    if(iteration>0){
+            var myWords= {"words":[]};
+            var keys = Object.keys(words);
+            for(var j =Math.rand(4,6); j >= 0; j--){
+              myWords["words"].push(words[keys[ keys.length * Math.random() << 0]]);
+            }
+            algo.generate(myWords.words, bool);
+            generateLocal(bool);
+        }
+  }
+    function generate(){
+        // iteration--;
+        if(iteration>0){
+                var myWords= {"words":[]};
+                var keys = Object.keys(words);
+                for(var j =Math.rand(4,6); j >= 0; j--){
+                  myWords["words"].push(words[keys[ keys.length * Math.random() << 0]]);
+                }
+                // algo.generate(myWords);
+                console.log(JSON.stringify(myWords));
+
+                //generate();
+            $.ajax( {
+                url:"https://api-tree.herokuapp.com/inputs/",
+                data:JSON.stringify(myWords),
+                contentType: "application/json",
+                type:"POST"
+            }, function( data ) {
+              console.log(data);
+            });
+        }
+    }
+initTree();
+tree.timeline.start();
   // une foi générer se connecter à socket pour récupérer les suivants.
   var socket = io.connect('https://api-tree.herokuapp.com');
   socket.on('new_inputs', function (data) {
