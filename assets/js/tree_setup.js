@@ -139,21 +139,21 @@ function randomBranches(){
   algo.init(tree);
 // Regarder si mots sur API et les générer ( peut être mettre un delai)
 
-  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
-    console.log(data.inputs);
-    for (var i=0; i<data.inputs.length; i++){
-      algo.generate(data.inputs[i].words, false, true);
-    }
-    tree.redraw();
-    $("#loader").fadeOut(500);
-  });
-  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-20T15:00:30.021Z").done(function(data){
+  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
+  //   console.log(data.inputs);
   //   for (var i=0; i<data.inputs.length; i++){
   //     algo.generate(data.inputs[i].words, false, true);
   //   }
   //   tree.redraw();
   //   $("#loader").fadeOut(500);
   // });
+  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-20T15:00:30.021Z").done(function(data){
+    for (var i=0; i<data.inputs.length; i++){
+      algo.generate(data.inputs[i].words, false, true);
+    }
+    tree.redraw();
+    $("#loader").fadeOut(500);
+  });
   // une foi générer se connecter à socket pour récupérer les suivants.
   var socket = io.connect('https://api-tree.herokuapp.com');
   socket.on('new_inputs', function (data) {
