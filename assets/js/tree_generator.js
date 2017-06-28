@@ -45,7 +45,7 @@ var algo =  {
   minValue:0,
   params:{width:5,color:white, size:20, freq:10,amplitude:5},
   animate:true,
-  goldenLeafs:[],
+  goldenLeaves:[],
   isPresent:[],
   init: function(tree){
     this.treeGlobal = tree;
@@ -122,6 +122,7 @@ var algo =  {
     if (this.nbInput%150===0){
       shape = "square";
       shapeFill = true;
+      this.params.size *= 1.5;
     }else{
       if(this.avgValue>10)
         shape = "square";
@@ -139,13 +140,13 @@ var algo =  {
         animationStade: this.animate ? 0:100,
       });
       if(this.nbInput%150===0)
-        this.goldenLeafs.push(leaf);
+        this.goldenLeaves.push(leaf);
     this.currentBranche.addChildcustom(leaf);
   },
   createBranche: function(){
-    if(40 + (this.avgValue/20)*59 > 100){
-      console.log(this.avgValue);
-    }
+    // if(40 + (this.avgValue/20)*59 > 100){
+    //   console.log(this.avgValue);
+    // }
     var branche =  this.treeGlobal.display.branche({
       strokeWidth:this.params.width,
       strokeColor:this.params.color,
@@ -216,10 +217,7 @@ var algo =  {
         this.params.color = colors[6];
       }
     if(type==="addLeaf"){
-      if(this.nbInput%150 === 0){
-        this.params.size = 120;
-      }
-      else if(this.containAllWords(words.Tristesse, words.Joie))
+      if(this.containAllWords(words.Tristesse, words.Joie))
         this.params.size = 60;
       else if(this.containOneofWords(words.Connaissance, words.Voir) && this.avgValue < 8 )
         this.params.size = 70;
@@ -420,7 +418,7 @@ var algo =  {
     for(var i = branche.branches.length - 1; i>=0; i--){
       for(var j = branche.branches[i].leaves.length -1; j >=0 ; j--) {
         // branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
-        branche.branches[i].leaves[j].strokeWidth +=  0.1;
+        branche.branches[i].leaves[j].strokeWidth +=  0.2;
           branche.branches[i].leaves[j].size +=  11;
       }
       this.enlarge(branche.branches[i]);

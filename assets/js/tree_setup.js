@@ -28,7 +28,7 @@ oCanvas.domReady(function () {
     HTMLcanvas.height = window.innerHeight;
     HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
     tree = oCanvas.create(oCanvasparams);
-    initTree();
+    // initTree();
   };
   HTMLzoombutton.addEventListener("click",function(){
       oCanvas.Zoom.setLevel(oCanvas.Zoom.level - 50);
@@ -97,32 +97,33 @@ function randomBranches(){
  // Faire touner l'algo de génération avec les nouvelles données*/
   // algo.init(tree);
   // algo.generate(tree);
-  // var i = 0;
-  // tree.setLoop(function () {
-  //
-  //   for(var j = 0; j < leafs["square"].length; j++){
-  //   }
-  //   i = i > 360 ? 0 : i+1;
-  //   // console.log(i);
-  // });
+  var i = 0;
+  tree.setLoop(function () {
+
+    for(var j = 0; j < algo.goldenLeaves.length; j++){
+      algo.goldenLeaves[j].leafRotation = i;
+    }
+    i = i > 360 ? 0 : i+1;
+  });
 
 function initTree(){
   // Regarder si mots sur API et les générer ( peut être mettre un delai)
-  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
-  //   console.log(data.inputs);
-  //   for (var i=0; i<data.inputs.length; i++){
-  //     algo.generate(data.inputs[i].words, false, true);
-  //   }
-  //   tree.redraw();
+  $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
+    console.log(data.inputs);
+    for (var i=0; i<data.inputs.length; i++){
+      algo.generate(data.inputs[i].words, false, true);
+    }
+    tree.redraw();
     $("#loader").fadeOut(500);
   // });
+});
 }
 
   var iteration;
   HTMLbutton.addEventListener("click", function(e){
         // generate();
-        iteration = 2;
-            generateLocal(true);
+        iteration = 1;
+            generate(true);
   });
   HTMLbuttonLots.addEventListener("click", function(e){
         // generate();
@@ -132,7 +133,6 @@ function initTree(){
   function generateLocal(bool){
     iteration--;
     if(iteration>0){
-
             var myWords= {"words":[]};
             var keys = Object.keys(words);
             for(var j =Math.rand(4,6); j >= 0; j--){
@@ -140,13 +140,11 @@ function initTree(){
             }
             algo.generate(myWords.words, bool);
             generateLocal(bool);
-
         }
   }
     function generate(){
         // iteration--;
         if(iteration>0){
-            setTimeout(function(){
                 var myWords= {"words":[]};
                 var keys = Object.keys(words);
                 for(var j =Math.rand(4,6); j >= 0; j--){
@@ -154,29 +152,29 @@ function initTree(){
                 }
                 // algo.generate(myWords);
                 console.log(JSON.stringify(myWords));
-                $.ajax( {
-                    url:"https://api-tree.herokuapp.com/inputs",
-                    data:JSON.stringify(myWords),
-                    contentType: "application/json",
-                    type:"POST",
-                    accessControlAllowOrigin:"*"
-                }, function( data ) {
-                  console.log(data);
-                });
+
                 //generate();
-            }, 500);
+
+            $.ajax( {
+                url:"https://api-tree.herokuapp.com/inputs",
+                data:JSON.stringify(myWords),
+                contentType: "application/json",
+                type:"POST"
+            }, function( data ) {
+              console.log(data);
+            });
         }
     }
-
 initTree();
+tree.timeline.start();
   // une foi générer se connecter à socket pour récupérer les suivants.
-  // var socket = io.connect('https://api-tree.herokuapp.com');
-  // socket.on('new_inputs', function (data) {
-  //   // New Branch
-  //   console.log("socket data : ", data);
-  //   algo.generate(data, true, false);
-  //   //socket.emit('my other event', { my: 'data' });
-  //   //algo(tree_global).generate(data);
-  // });
+  var socket = io.connect('https://api-tree.herokuapp.com');
+  socket.on('new_inputs', function (data) {
+    // New Branch
+    console.log("socket data : ", data);
+    algo.generate(data, true, false);
+    //socket.emit('my other event', { my: 'data' });
+    //algo(tree_global).generate(data);
+  });
   // algo.generate({inputs: [21,14,23]});
 });
