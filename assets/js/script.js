@@ -6,29 +6,32 @@ $(function () {
 
 	var maxChecked = 6;
 
-	var minMoodChecked = 1;
-	var minStateChecked = 1;
+	var minFeelingChecked = 1;
+	var minAffinityChecked = 1;
 
-	var maxMoodChecked = 2;
-	var maxStateChecked = 5;
+	var maxFeelingChecked = 2;
+	var maxAffinityChecked = 5;
 
-	var moodChecked = 0;
-	var stateChecked = 0;
+	var feelingChecked = 0;
+	var affinityChecked = 0;
 
 	var cookieName = "treegenerationform";
-	var cookieTime = 24;
+	var cookieTime = 2;
 
 	var APIGetWordsUrl = "https://api-tree.herokuapp.com/words";
 	var APIPostUrl = "https://api-tree.herokuapp.com/inputs";
 
-	var checkboxModel = "<span class=\"input col-md-2 arcade\"><input type=\"checkbox\"/><label></label></span>";
+	var checkboxModel = "<span class=\"input col-xs-4 col-sm-3 col-md-2 clearfix\"><input type=\"checkbox\"/><label></label></span>";
+
+	var alreadyVoteMessage = "<div class=\"alert alert-warning alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Vous avez déjà voté ! Vous pourrez voter à nouveau dans XMINS minutes et XSECONDS secondes.</div>";
+	var successVoteMessage = "<div class=\"alert alert-success alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Merci pour votre vote ! Grâce à vous, l'arbre va grandir. </div>";
 
 	//---------------------------------------------
 	// Create the cookie
 	//---------------------------------------------
-	var setCookie = function(cname, exhours) {
+	var setCookie = function(cname, exmin) {
 		var d = new Date();
-		d.setTime(d.getTime() + (exhours * 60 * 60 * 1000));
+		d.setTime(d.getTime() + (exmin * 60 * 1000));
 		var expires = "expires=" + d.toUTCString();
 		document.cookie = cname + "=" + d + ";" + expires + ";path=/";
 	}
@@ -57,40 +60,40 @@ $(function () {
 		//---------------------------------------------
 		$("[type='reset']").click(function() {
 			// Reset counters
-			$(".cptMood").html("");
-			$(".cptState").html("");
+			$(".cptFeeling").html("");
+			$(".cptAffinity").html("");
 			$(".totalreponse").html('0/' + maxChecked);
 
 			// Reset checkboxes and variables
-			$(".mood, .state").find(":checkbox").removeAttr("disabled");
-			moodChecked = 0;
-			stateChecked = 0;
+			$(".feeling, .affinity").find(":checkbox").removeAttr("disabled");
+			feelingChecked = 0;
+			affinityChecked = 0;
 			checkedAction();
 		});
 
 		//---------------------------------------------
-		// Init events on mood checkboxes
+		// Init events on feelings checkboxes
 		//---------------------------------------------
-		$(".mood").find(":checkbox").each(function() {
+		$(".feeling").find(":checkbox").each(function() {
 			$(this).on("change", function() {
 				if ($(this).is(":checked")) {
-					moodChecked++;
+					feelingChecked++;
 				} else {
-					moodChecked--;
+					feelingChecked--;
 				}
 				checkedAction();
 			});
 		});
 
 		//---------------------------------------------
-		// Init events on states checkboxes
+		// Init events on affinities checkboxes
 		//---------------------------------------------
-		$(".state").find(":checkbox").each(function() {
+		$(".affinity").find(":checkbox").each(function() {
 			$(this).on("change", function() {
 				if ($(this).is(":checked")) {
-					stateChecked++;
+					affinityChecked++;
 				} else {
-					stateChecked--;
+					affinityChecked--;
 				}
 				checkedAction();
 			});
@@ -102,37 +105,40 @@ $(function () {
 		//---------------------------------------------
 		// Counters init and update
 		//---------------------------------------------
-		if (moodChecked == maxMoodChecked) {
-			$(".cptMood").html("("+moodChecked+"/"+maxMoodChecked+")");
-			$(".cptState").html("("+stateChecked+"/4)");
+		if (feelingChecked == maxFeelingChecked) {
+			$(".cptFeeling").html("("+feelingChecked+"/"+maxFeelingChecked+")");
+			$(".cptAffinity").html("("+affinityChecked+"/4)");
 		} else {
-			$(".cptMood").html("("+ moodChecked+"/1)");
-			$(".cptState").html("("+stateChecked+"/"+maxStateChecked+")");
+			$(".cptFeeling").html("("+ feelingChecked+"/1)");
+			$(".cptAffinity").html("("+affinityChecked+"/"+maxAffinityChecked+")");
 		}
-		$(".totalreponse").html((moodChecked + stateChecked)+'/'+ maxChecked);
+		$(".totalreponse").html((feelingChecked + affinityChecked)+'/'+ maxChecked);
 
 		//---------------------------------------------
 		// Disable checkboxes if max checked
 		//---------------------------------------------
-		$(".mood, .state").find(":checkbox:not(:checked)").attr("disabled", "disabled");
-		if (moodChecked < maxMoodChecked && moodChecked + stateChecked < maxChecked) {
-			$(".mood").find(":checkbox:not(:checked)").removeAttr("disabled");
+		$(".feeling, .affinity").find(":checkbox:not(:checked)").attr("disabled", "disabled");
+		if (feelingChecked < maxFeelingChecked && feelingChecked + affinityChecked < maxChecked) {
+			$(".feeling").find(":checkbox:not(:checked)").removeAttr("disabled");
 		}
-		if (stateChecked < maxStateChecked && moodChecked + stateChecked < maxChecked) {
-			$(".state").find(":checkbox:not(:checked)").removeAttr("disabled");
+		if (affinityChecked < maxAffinityChecked && feelingChecked + affinityChecked < maxChecked) {
+			$(".affinity").find(":checkbox:not(:checked)").removeAttr("disabled");
 		}
 
 		//---------------------------------------------
 		// Disable or enable submit and bind events on
 		// submit
 		//---------------------------------------------
-		if (moodChecked >= minMoodChecked && stateChecked >= minMoodChecked && moodChecked + stateChecked <= maxChecked) {
+		if (feelingChecked >= minFeelingChecked && affinityChecked >= minFeelingChecked && feelingChecked + affinityChecked <= maxChecked) {
 			$(":submit").removeAttr("disabled", "disabled");
 			$("form").unbind("submit");
 			$("form").bind("submit", function(e) {
 				// Cancel classic submit
 				e.preventDefault();
-				ajaxPostData(e);
+				if (userCanVote()) {
+					ajaxPostData(e);
+				}
+				$("html, body").stop().animate({scrollTop:0}, 500, 'swing');
 			});
 		} else {
 			$("form").unbind("submit");
@@ -146,13 +152,12 @@ $(function () {
 	var ajaxPostData = function() {
 		// Init array of keys of checked inputs
 		var checkboxData = [];
-		$(".mood, .state").find(":checkbox:checked").each(function() {
+		$(".feeling, .affinity").find(":checkbox:checked").each(function() {
 			checkboxData.push(parseInt(this.name));
 		});
-		console.log(checkboxData,minMoodChecked, minMoodChecked );
+
 		// Post data to API and redirect to tree view
-		if (checkboxData.length >= (minMoodChecked + minMoodChecked) && checkboxData.length <= maxChecked) {
-			console.log(checkboxData);
+		if (checkboxData.length >= (minFeelingChecked + minAffinityChecked) && checkboxData.length <= maxChecked) {
 			$.ajax({
 				type: "POST",
 				url: APIPostUrl,
@@ -162,7 +167,8 @@ $(function () {
 				success: function(data){
 					// If post is done, create cookie and redirect the user
 					setCookie(cookieName, cookieTime);
-					// window.location.replace("/tree.html");
+					$("main.container").find(".alert").remove();
+					$("main.container").prepend(successVoteMessage);
 					console.log(data);
 				},
 				error: function(data) {
@@ -172,38 +178,48 @@ $(function () {
 		}
 	}
 
-	//---------------------------------------------
-	// Check if user had already vote. If not,
-	// create inputs with words from API
-	//---------------------------------------------
-	var cookie = getCookie(cookieName);
-	if (cookie == "") {
-		$.getJSON(APIGetWordsUrl, function(data) {
-			$.each(data, function() {
-				var newCheckbox = $(checkboxModel).clone();
-				newCheckbox.find("input").attr("id", this._id).attr("name", this.key);
-				newCheckbox.find("label").attr("for", this._id).html(this.word);
-				if (this.mood) {
-					$(".moods").append(newCheckbox.addClass("mood"));
-				} else {
-					$(".states").append(newCheckbox.addClass("state"));
-				}
-			});
-			moodChecked = $(".mood").find(":checkbox:checked").length;
-			stateChecked = $(".state").find(":checkbox:checked").length;
-			listenCheckbox();
-			checkedAction();
-		}).fail(function(error) {
-			console.log("error");
-		}).always(function() {
-			$(".model").remove();
+	$.getJSON(APIGetWordsUrl, function(data) {
+		$.each(data, function() {
+			var newCheckbox = $(checkboxModel).clone();
+			newCheckbox.find("input").attr("id", this._id).attr("name", this.key);
+			newCheckbox.find("label").attr("for", this._id).html("<span class=\"center-text\">" + this.word + "</span>");
+			if (this.mood) {
+				$(".feelings").append(newCheckbox.addClass("feeling"));
+			} else {
+				$(".affinities").append(newCheckbox.addClass("affinity"));
+			}
 		});
-	// If user had already vote, create message to prevent him
-	} else {
-		var endTime = (new Date(cookie).getTime() - new Date().getTime()) / (1000 * 60 * 60);
-		var hoursLeft = Math.trunc(endTime);
-		var minLeft = Math.trunc((endTime%1)*60);
-		$("main.container").html("<div class=\"alert alert-warning alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Vous avez déjà voté ! Vous pourrez voter à nouveau dans " + hoursLeft + " heures et " + minLeft + " minutes.</div>");
+		feelingChecked = $(".feeling").find(":checkbox:checked").length;
+		affinityChecked = $(".affinity").find(":checkbox:checked").length;
+		listenCheckbox();
+		checkedAction();
+	}).fail(function(error) {
+		console.log("error");
+	}).always(function() {
+		$(".model").remove();
+	});
+
+	//---------------------------------------------
+	// Check if user had already vote.
+	//---------------------------------------------
+	var userCanVote = function() {
+		var cookie = getCookie(cookieName);
+		if (cookie != "") {
+			cookieTime = new Date(cookie).getTime();
+			currentTime = new Date().getTime();
+			if (cookieTime < currentTime) {
+				document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+			} else {
+				// If user had already vote, create message to prevent him
+				var endTime = (new Date(cookie).getTime() - new Date().getTime()) / (1000 * 60);
+				var minLeft = Math.trunc(endTime);
+				var secLeft = Math.trunc((endTime%1)*60);
+				$("main.container").find(".alert").remove();
+				$("main.container").prepend(alreadyVoteMessage.replace("XMINS", minLeft).replace("XSECONDS", secLeft));
+				return false;
+			}
+		}
+		return true;
 	}
 
 });

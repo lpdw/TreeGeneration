@@ -1,19 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Frijole|Poiret+One|Reenie+Beanie|Roboto');
 
-body {
-  background-color:#333333;
+html, body {
+  background-color: hsla(220,13%,18%, 1);
   color: white;
   font-family: 'Roboto', sans-serif;
-
+  margin:0px;
+  padding:0px;
+  width:100%;
 }
 
 a {
   color:#607d8b;
-}
-
-
-header {
-  /*font-family: 'Frijole', cursive;*/
 }
 
 header a {
@@ -38,7 +35,7 @@ header a:hover {
   z-index: 100;
 }
 
-.cptMood, .cptState {
+.cptFeeling, .cptAffinity {
   font-size: 18px;
 }
 
@@ -60,8 +57,9 @@ header a:hover {
 hr {
   border-top: 1px solid #607d8b;
 }
-.states, .moods p {
-  font-size: 12px;
+
+.affinities p, .feelings p {
+  font-size: 1.5em;
   color: #f5f5f5;
 }
 
@@ -86,132 +84,101 @@ hr {
   margin-top: 15px;
 }
 
-
-.arcade input {
+.area [type="checkbox"]:not(:checked),
+.area [type="checkbox"]:checked {
   display: none;
+}
+
+.area [type="checkbox"] + label {
+  position: relative;
+  width: 90%;
+  text-align: center;
+  font-size: 1.2em;
+  margin: 5%;
+  margin-bottom: -moz-calc(5% + 50px);
+  margin-bottom: -webkit-calc(5% + 50px);
+  margin-bottom: -o-calc(5% + 50px);
+  margin-bottom: calc(5% + 50px);
+  padding-bottom: 90%;
+  height: 0px;
+  cursor: pointer;
+}
+
+.area [type="checkbox"] + label > span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.area [type="checkbox"] + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 30px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.74);
+  -webkit-box-shadow: inset 0 7px 15px rgba(255,255,255,0.5), inset 0 -7px 15px rgba(0,0,0,0.5);
+  box-shadow: inset 0 7px 15px rgb(255, 255, 255), inset 0 -7px 15px rgba(0, 0, 0, 0.67);
 
 }
 
-.arcade {
-  position: relative;
-  /* margin-top: 10% !important; */
-  display: inline-block;
-  text-align: center;
-  /* margin: 4%; */
-  font: 1.5em/1em Arial, sans-serif;
-  color: black;
-  background: #fff;
-  width: 100px !important;
-  height: 100px;
-  top: 50%;
-  /* left: 50%; */
-  /* margin: -50px 0 0 -50px; */
-  -webkit-border-radius: 50%;
+.area [type="checkbox"] + label:after {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 80%;
+  height: 80%;
+  background-color: #09ad7e;
   border-radius: 50%;
+  margin: 10%;
 
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 40px 0px 0 0;
-  cursor: pointer;
   -webkit-transition: all 0.1s ease;
   -moz-transition: all 0.1s ease;
   -o-transition: all 0.1s ease;
   -ms-transition: all 0.1s ease;
   transition: all 0.1s ease;
-
-
-  /*
-  -webkit-box-shadow: inset 0 -5px 20px rgba(0,0,0,0.5), inset 0 15px 20px rgba(255,255,255,0.5), 0 5px 10px rgba(0,0,0,0.2), 0 10px 10px rgba(0,0,0,0.5);
-  box-shadow: inset 0 -5px 20px rgba(0,0,0,0.5), inset 0 15px 20px rgba(255,255,255,0.5), 0 5px 10px rgba(0,0,0,0.7), 0 10px 10px rgba(0,0,0,0.5);
-  */
-
-
   -webkit-box-shadow: inset 0 -5px 20px rgba(0,0,0,0.5), inset 0 15px 20px rgba(255,255,255,0.5), 0 5px 10px rgba(0,0,0,0), 0 10px 10px rgba(0,0,0,0);
   box-shadow: inset 0 -5px 20px rgba(0,0,0,0.5), inset 0 15px 20px rgba(255,255,255,0.5), 0 5px 10px rgba(0,0,0,0), 0 10px 10px rgba(0,0,0,0);
-
-
-
-}
-.arcade:before {
-  content: " ";
-      display: block;
-      position: absolute;
-      z-index: -5;
-      width: 120px;
-      height: 120px;
-      /* top: 50%; */
-      /* left: 50%; */
-      -webkit-border-radius: 50%;
-      border-radius: 50%;
-      background: #fff;
-      top: -10px;
-      left: -10px;
-      -webkit-box-shadow: inset 0 7px 15px rgba(255,255,255,0.5), inset 0 -7px 15px rgba(0,0,0,0.5);
-      box-shadow: inset 0 7px 15px rgba(255,255,255,0.5), inset 0 -7px 15px rgba(0,0,0,0.5);
 }
 
-.arcade:active {
-  -webkit-box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-  color: #ffeded;
+.area [type="checkbox"]:not(:checked) + label:after {
+  opacity: 1;
+  transform: scale(1);
+  background-color: #fff;
 }
 
-
-
-
-/* Cachons la case à cocher */
-[type="checkbox"]:not(:checked),
-[type="checkbox"]:checked {
-  position: absolute;
-
-
+.area [type="checkbox"]:checked + label:after {
+  opacity: 1;
+  background-color: white;
 }
 
-/* on prépare le label*/
-[type="checkbox"]:checked + label{
-  position: relative; /* permet de positionner les pseudo-éléments*/
-  top: 0;
-  left: 0;
-  width: 100%;
-    color:#03a9f4;
-  border-radius: 50%;
-  font-weight: bold;
-  cursor: pointer;    /* affiche un curseur adapté ss*/
-
-
+.area [type="checkbox"]:checked + label:before{
+  background-color: white;
+    -webkit-box-shadow: inset 0 7px 15px rgba(255,255,255,0.5), inset 0 -7px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0px 30px rgb(222, 255, 252), 0px 0px 0px rgba(0, 0, 0, 0.67);
 }
 
-/* Aspect si "pas cochée" */
-[type="checkbox"]:not(:checked) + label:after {
-  opacity: 0; /* coche invisible */
-  transform: scale(0); /* mise à l'échelle à 0 */
-}
-/* Aspect si "cochée" */
-[type="checkbox"]:checked + label:after {
-  opacity: 1; /* coche opaque */
-  transform: scale(1); /* mise à l'échelle 1:1 */
-}
-
-/* aspect désactivée */
-[type="checkbox"]:disabled:not(:checked) + label:before,
-[type="checkbox"]:disabled:checked + label:before {
+.area [type="checkbox"]:disabled + label:before {
   box-shadow: none;
-  border-color: #bbb;
-  background-color: #ddd;
-}
-/* styles de la coche (si cochée/désactivée) */
-[type="checkbox"]:disabled:checked + label:after {
-  color: #999;
-}
-/* on style aussi le label quand désactivé */
-[type="checkbox"]:disabled + label {
-  color: #aaa;
+  opacity: 0.3;
 }
 
-/* aspect au focus de l'élément */
-[type="checkbox"]:checked:focus + label:before,
-[type="checkbox"]:not(:checked):focus + label:before {
+.area [type="checkbox"]:disabled:checked + label:after {
+  color: #999;
+    opacity: 0.3;
+}
+
+.area [type="checkbox"]:disabled + label {
+  color: #aaa;
+  opacity: 0.3;
+}
+
+.area [type="checkbox"]:focus + label:before {
   border: 1px dotted blue;
 }
 
@@ -221,10 +188,6 @@ footer {
   font-size: 11px;
   color: #607d8b;
 }
-
-
-/*https://codepen.io/soulwire/pen/bKens*/
-
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700&subset=latin,latin-ext);
 *,
@@ -238,35 +201,19 @@ footer {
   text-decoration: none;
 }
 
-
-@media screen and (max-width: 1020px) {
-  .states, .moods, .button {
-    width: 100%;
-    display: inline-block;
-    border: solid;
-  }
-
-  .buttons {
-    margin-top: 30px;
-  }
-}
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 767px) {
 
   .container {
     overflow: hidden;
   }
 
-
-
-  .area .input{
-    width: 143px;
+  .affinities p, .feelings p {
+    font-size: 1.2em;
   }
 
-  .area .input label{
-    font-size: 12px;
-  }
-  .states, .moods, .button {
-    width: 100%;
+
+  .area [type="checkbox"] + label {
+    font-size: 1em;
   }
 
 }

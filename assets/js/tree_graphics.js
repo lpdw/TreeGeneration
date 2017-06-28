@@ -169,7 +169,7 @@ var leaf = function (settings, core){
           //   dist /= 2;
           var center = new Point(end_line.x + (dist *Math.cos(angle))
                                     ,end_line.y + (dist * Math.sin(angle))) ;
-          var ellipsesize = ((Math.sin(progress*6 ) +1) * (5*invProgress + 10) + dist) * oCanvas.Zoom.level/850;
+          var ellipsesize = ((Math.sin(progress*6 ) +2*invProgress) * (5*invProgress + 10*invProgress) + dist*invProgress) * oCanvas.Zoom.level/700;
           var grd = canvas.createRadialGradient(
                               center.drawX(),
                               center.drawY(),
@@ -338,7 +338,7 @@ var branche = function (settings, core){
           canvas.beginPath();
           canvas.lineWidth = canvas.lineWidth;
           var fac = oCanvas.Zoom.level / 700;
-          var size = (Math.sin(invProgress*20) + 5) * (20*invProgress + 10) * fac ;
+          var size = (Math.sin(invProgress*20) + 5*invProgress) * (20*invProgress + 10*invProgress) * fac ;
           var grd = canvas.createRadialGradient(
                               lastPoint.drawX(),
                               lastPoint.drawY(),
