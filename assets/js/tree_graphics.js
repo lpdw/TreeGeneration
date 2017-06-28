@@ -337,9 +337,6 @@ var branche = function (settings, core){
         if(progress != 1){
           canvas.beginPath();
           canvas.lineWidth = canvas.lineWidth;
-          canvas.strokeStyle = canvas.strokeStyle;
-          canvas.lineJoin = canvas.lineJoin;
-          canvas.lineCap = canvas.lineCap;
           var fac = oCanvas.Zoom.level / 700;
           var size = (Math.sin(invProgress*20) + 5) * (20*invProgress + 10) * fac ;
           var grd = canvas.createRadialGradient(
@@ -356,19 +353,20 @@ var branche = function (settings, core){
           canvas.fill();
           canvas.closePath();
           canvas.beginPath();
-          canvas.lineWidth = (this.lineWidth * (1 - progress))/2;
+          canvas.lineWidth = (canvas.lineWidth * (1 - progress))*0.9;
+          // console.log(canvas.lineWidth);
           canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
           //progress = progress == 0 ? 0.0001 : progress;
           var max = Math.floor(150 * invProgress);
           var firstPoint = new Point();
-          var start = max > 40 ? max - 40 : 0;
+          var start = max > 40*(1 - progress/2) ? max - 40*(1 - progress/2)  : 0;
 
           for (i = start; i<= max; i++) {
             var angle =  0.1 * Math.pow(i,(1 - progress));
             //var angle =  Math.pow(i,i / 100);
 
-             currentPoint.x=lastPoint.x + (.5*i+angle * invProgress * fac /2)*Math.cos(angle);
-             currentPoint.y=lastPoint.y + (.5*i+angle * invProgress * fac /2)*Math.sin(angle);
+             currentPoint.x=lastPoint.x + (.5*i+angle * invProgress * fac)*Math.cos(angle);
+             currentPoint.y=lastPoint.y + (.5*i+angle * invProgress * fac)*Math.sin(angle);
 
             if(i === start ){
                 firstPoint.set(currentPoint);

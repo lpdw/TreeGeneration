@@ -15,7 +15,7 @@ oCanvas.domReady(function () {
   	background: black,
     drawEachFrame : true,
     clearEachFrame : true,
-    fps: 20,
+    fps: 24,
   };
   // console.log(HTMLcanvasAnims.getContext('2d'));
   // console.log(oCanvas.AnimContext);
@@ -109,7 +109,6 @@ function randomBranches(){
 function initTree(){
   // Regarder si mots sur API et les générer ( peut être mettre un delai)
   $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
-
     for (var i=0; i<data.inputs.length; i++){
       algo.generate(data.inputs[i].words, false, true);
     }
@@ -167,6 +166,8 @@ function initTree(){
     }
         algo.init(tree);
 initTree();
+// $("#loader").fadeOut(500);
+
 tree.timeline.start();
   // une foi générer se connecter à socket pour récupérer les suivants.
   var socket = io.connect('https://api-tree.herokuapp.com');
