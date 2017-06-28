@@ -122,7 +122,7 @@ var leaf = function (settings, core){
               animationStade: 100
              }, {
               easing: "ease-out-quad",
-          duration: 6000
+          duration: 10000
           });
         }
     },
@@ -436,7 +436,7 @@ var branche = function (settings, core){
     		animationStade: 100
     	   }, {
     		easing: "ease-out-quad",
-        duration: 6000
+        duration: 10000
     	});
       this.redraw();
     },

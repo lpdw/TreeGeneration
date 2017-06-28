@@ -1,71 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
-    <meta charset="utf-8">
-    <title>Gene-Tree</title>
-    <meta description="arbre généré à partir d'input donnés">
-    <link rel="stylesheet" href="assets/css/main.css"> <!-- css de base -->
-    <link rel="stylesheet" href="assets/css/background.css">
-  </head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form</title>
+    <meta name="description" content="Fullscreen Form Interface: A distraction-free form concept with fancy animations" />
+    <meta name="keywords" content="fullscreen form, css animations, distraction-free, web design" />
+    <meta name="author" content="LPDW" />
+    <!-- <link rel="shortcut icon" href="../favicon.ico"> -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!--
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css" />
+    -->
+    <link rel="stylesheet" type="text/css" href="assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+  </head>
   <body>
-      <span class="startAnimation"></span>
-      <div id="loader">
-          <div class="wrap">
-            <div class="drop-outer">
-              <svg class="drop" viewBox="0 0 40 40" version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="20"/>
-              </svg>
-            </div>
-            <div class="ripple ripple-1">
-                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="24"/>
-                </svg>
-            </div>
-            <div class="ripple ripple-2">
-                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="24"/>
-                </svg>
-            </div>
-            <div class="ripple ripple-3">
-                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="24"/>
-                </svg>
+    <header class="container">
+      <h1><a href="#">TreeGeneration</a> <span class="totalreponse" ></span></h1>
+    </header>
+    <main class="container">
+
+      <form action="#" method="">
+        <!-- MOOD -->
+        <div class="inputs">
+
+          <div class="area">
+            <div class="row">
+
+              <div class="states col-md-7">
+                <h2>États <span class="cptState"></span></h2>
+                <hr>
+                <p>Selectionnez au moins un état (maximum 5 ou 4 si deux humeurs sélectionnées)</p>
+              </div>
+
+
+              <div class="moods col-md-5">
+                <h2>Humeurs <span class="cptMood"></span></h2>
+                <hr>
+                <p>Selectionnez au moins une humeur (maximum 2)</p>
+              </div>
+
+              <!-- STATE -->
+
+              <div class="sep col-md-12 container"><hr></div>
+              <div class="button container">
+                <button type="reset" class="reset btn btn-warning">Réinitialiser | <span class="glyphicon glyphicon-repeat"></span></button>
+                <button type="submit" class="btn btn-success" id="envoyer">Envoyer | <span class="glyphicon glyphicon-share-alt"></span></button>
+              </div>
             </div>
           </div>
-        <span>Arbre en cours d'arrosage...</span>
-      </div>
-      <div class="canvas">
-        <canvas id='tree' width='1920' height='1080'></canvas>
-      </div>
+        </div>
+      </form>
 
-      <div class="button">
-        <button type="button" name="button" id="buttonLots">add++</button>
-        <button type="button" name="button" id="button">add</button>
-        <button type="button" id="zoom">+</button>
-        <button type="button" id="dezoom">-</button>
-      </div>
-
+    </main>
+    <footer class="container">
+      <p> TreeGeneration 2017 - LPDW </p>
+    </footer>
+    <script src="assets/js/jquery-1.9.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/boutonsEffects.js"></script>
   </body>
-  <!-- sripts arbre -->
-  <script
-    src="https://code.jquery.com/jquery-2.2.4.min.js"
-    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.8.7/ocanvas.min.js"></script>
-    <script type="text/javascript" src="assets/js/socket.io.js"></script>
-  <script src="assets/js/tree_graphics.js"></script>
-  <script src="assets/js/tree_generator.js"></script>
-  <script src="assets/js/tree_setup.js"></script>
-  <!-- fin scripts arbre -->
-  <!-- script background -->
-  <!-- <script type="text/javascript" src="assets/js/background/granim.min.js"></script> -->
-  <!-- <script type="text/javascript" src="assets/js/background/background.js"></script> -->
-  <!-- fin script background -->
-  <!-- socket.io -->
-
 </html>

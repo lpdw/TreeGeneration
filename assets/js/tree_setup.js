@@ -21,7 +21,7 @@ oCanvas.domReady(function () {
   // console.log(oCanvas.AnimContext);
   var tree = oCanvas.create(oCanvasparams);
   // Initier l'algo avec l'objet oCanvas;
-  algo.init(tree);
+
 
 
   window.onresize = function(event) {
@@ -103,7 +103,7 @@ function randomBranches(){
     for(var j = 0; j < algo.goldenLeaves.length; j++){
       algo.goldenLeaves[j].leafRotation = i;
     }
-    i = i > 360 ? 0 : i+1;
+    i = i > 360 ? 0 : i+2;
   });
 
 function initTree(){
@@ -165,6 +165,7 @@ function initTree(){
             });
         }
     }
+        algo.init(tree);
 initTree();
 tree.timeline.start();
   // une foi générer se connecter à socket pour récupérer les suivants.
