@@ -76,6 +76,7 @@ var algo =  {
       var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
       this.getParams(action);
       this[action]();
+      console.log(action);
     }
 
     // console.log("======END GEN====");

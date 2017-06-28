@@ -17,7 +17,7 @@ body{
       -ms-flex-align: center;
           align-items: center;
           background: hsla(220,13%,18%, 1);
-  background: white;
+  /*background: white;*/
 }
 .canvas{
   min-height: 100vh;
@@ -28,10 +28,7 @@ body{
 }
 #tree{
 
-  /*z-index: 50;*/
-}
-#animations{
-  background: transparent;
+  z-index: 50;
 }
 div.button{
   z-index: 10000;

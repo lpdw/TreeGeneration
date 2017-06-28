@@ -1,6 +1,5 @@
 oCanvas.domReady(function () {
   var HTMLcanvas = document.getElementById("tree"),
-  HTMLcanvasAnims = document.getElementById("animations"),
   HTMLbuttonLots = document.getElementById("buttonLots"),
   HTMLbutton = document.getElementById("button"),
   HTMLzoombutton = document.getElementById("zoom"),
@@ -9,8 +8,6 @@ oCanvas.domReady(function () {
 
   HTMLcanvas.height = window.innerHeight;
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
-  HTMLcanvasAnims.height = HTMLcanvas.height;
-  HTMLcanvasAnims.width =  HTMLcanvas.width ;
   // Initier le zoom pour qu'il puisse être utiliser lors du dessin
   oCanvas.Zoom.Init(HTMLcanvas, 200);
   var oCanvasparams = {
@@ -21,7 +18,6 @@ oCanvas.domReady(function () {
     fps: 20,
   };
   // console.log(HTMLcanvasAnims.getContext('2d'));
-  oCanvas.AnimContext = HTMLcanvasAnims.getContext('2d');
   // console.log(oCanvas.AnimContext);
   var tree = oCanvas.create(oCanvasparams);
   // Initier l'algo avec l'objet oCanvas;
@@ -78,7 +74,7 @@ function randomBranches(){
     else
       branches[Math.arrayRand(branches.length)].addChildcustom(branche);
     branches.push(branche);
-    tree.redraw();
+    // tree.redraw();
   }
 }
 
