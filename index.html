@@ -39,8 +39,13 @@
           </div>
         <span>Arbre en cours d'arrosage...</span>
       </div>
-      <canvas id='tree' width='1920' height='1080' moz-opaque></canvas>
+      <div class="canvas">
+        <canvas id='tree' width='1920' height='1080' moz-opaque></canvas>
+        <canvas id='animations' width='1920' height='1080'></canvas>
+      </div>
+
       <div class="button">
+        <button type="button" name="button" id="buttonLots">add++</button>
         <button type="button" name="button" id="button">add</button>
         <button type="button" id="zoom">+</button>
         <button type="button" id="dezoom">-</button>

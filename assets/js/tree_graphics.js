@@ -339,10 +339,19 @@ var branche = function (settings, core){
         }
         canvas.stroke();
         canvas.closePath();
+        var animeCanvas = oCanvas.AnimContext;
+        animeCanvas.clearRect(0,0,oCanvas.Zoom.canvas.width,oCanvas.Zoom.canvas.height);
+
         if(progress != 1){
-          canvas.beginPath();
+          animeCanvas.beginPath();
+          animeCanvas.lineWidth = canvas.lineWidth * oCanvas.Zoom.level / 500;
+          animeCanvas.strokeStyle = canvas.strokeStyle;
+          animeCanvas.lineJoin = canvas.lineJoin;
+          animeCanvas.lineCap = canvas.lineCap;
           var size = (Math.sin(invProgress*20) + 2) * (20*invProgress + 10);
-          var grd = canvas.createRadialGradient(
+          console.log(animeCanvas);
+          console.log(size);
+          var grd = animeCanvas.createRadialGradient(
                               lastPoint.drawX(),
                               lastPoint.drawY(),
                               oCanvas.Zoom.convert(size/12),
@@ -351,13 +360,13 @@ var branche = function (settings, core){
                               oCanvas.Zoom.convert(size/4));
           grd.addColorStop(0,"transparent");
           grd.addColorStop(1,"white");
-          canvas.fillStyle = grd;
-          canvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size/4), 0, Math.PI * 2, false);
-          canvas.fill();
-          canvas.closePath();
-          canvas.beginPath();
-          canvas.lineWidth = (this.lineWidth * (1 - progress))/2;
-          canvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
+          animeCanvas.fillStyle = grd;
+          animeCanvas.arc(lastPoint.drawX(), lastPoint.drawY(), oCanvas.Zoom.convert(size/4), 0, Math.PI * 2, false);
+          animeCanvas.fill();
+          animeCanvas.closePath();
+          animeCanvas.beginPath();
+          animeCanvas.lineWidth = (this.lineWidth * (1 - progress))/2;
+          animeCanvas.strokeStyle = 'rgba(200,180,200,'+ 1 - progress +')';
           //progress = progress == 0 ? 0.0001 : progress;
           var max = Math.floor(150 * invProgress);
           var firstPoint = new Point();
@@ -375,17 +384,17 @@ var branche = function (settings, core){
                 continue;
             }
             else if(i == start+1){
-              canvas.closePath();
-              drawArrow(canvas,firstPoint,currentPoint,20*invProgress);
-              canvas.stroke();
-              canvas.beginPath();
-              canvas.moveTo(currentPoint.drawX(), currentPoint.drawY());
+              animeCanvas.closePath();
+              drawArrow(animeCanvas,firstPoint,currentPoint,20*invProgress);
+              animeCanvas.stroke();
+              animeCanvas.beginPath();
+              animeCanvas.moveTo(currentPoint.drawX(), currentPoint.drawY());
             }
-            canvas.lineTo(currentPoint.drawX(), currentPoint.drawY());
+            animeCanvas.lineTo(currentPoint.drawX(), currentPoint.drawY());
            }
 
-           canvas.stroke();
-           canvas.closePath();
+           animeCanvas.stroke();
+           animeCanvas.closePath();
         }
 
           var overflow = 0;

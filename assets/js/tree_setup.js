@@ -1,6 +1,7 @@
 oCanvas.domReady(function () {
   var HTMLcanvas = document.getElementById("tree"),
-  // HTMLcanvasAnims = document.getElementById("animations"),
+  HTMLcanvasAnims = document.getElementById("animations"),
+  HTMLbuttonLots = document.getElementById("buttonLots"),
   HTMLbutton = document.getElementById("button"),
   HTMLzoombutton = document.getElementById("zoom"),
   HTMLdezoombutton = document.getElementById("dezoom");
@@ -8,8 +9,8 @@ oCanvas.domReady(function () {
 
   HTMLcanvas.height = window.innerHeight;
   HTMLcanvas.width =  window.innerWidth <  ( window.innerHeight * 9 ) /16  ? window.innerWidth : ( window.innerHeight * 9 ) /16 ;
-  // HTMLcanvasAnims.height =HTMLcanvas.height;
-  // HTMLcanvasAnims.width =  HTMLcanvas.width ;
+  HTMLcanvasAnims.height = HTMLcanvas.height;
+  HTMLcanvasAnims.width =  HTMLcanvas.width ;
   // Initier le zoom pour qu'il puisse être utiliser lors du dessin
   oCanvas.Zoom.Init(HTMLcanvas, 200);
   var oCanvasparams = {
@@ -19,6 +20,9 @@ oCanvas.domReady(function () {
     clearEachFrame : true,
     fps: 20,
   };
+  // console.log(HTMLcanvasAnims.getContext('2d'));
+  oCanvas.AnimContext = HTMLcanvasAnims.getContext('2d');
+  // console.log(oCanvas.AnimContext);
   var tree = oCanvas.create(oCanvasparams);
   // Initier l'algo avec l'objet oCanvas;
   algo.init(tree);
@@ -121,21 +125,26 @@ function initTree(){
   var iteration;
   HTMLbutton.addEventListener("click", function(e){
         // generate();
-          iteration = 3000;
-            generateLocal();
+        iteration = 2;
+            generateLocal(true);
   });
-  function generateLocal(){
+  HTMLbuttonLots.addEventListener("click", function(e){
+        // generate();
+          iteration = 2000;
+            generateLocal(false);
+  });
+  function generateLocal(bool){
     iteration--;
     if(iteration>0){
-        setTimeout(function(){
+
             var myWords= {"words":[]};
             var keys = Object.keys(words);
             for(var j =Math.rand(4,6); j >= 0; j--){
               myWords["words"].push(words[keys[ keys.length * Math.random() << 0]]);
             }
-            algo.generate(myWords.words, false);
-            generateLocal();
-          },100)
+            algo.generate(myWords.words, bool);
+            generateLocal(bool);
+
         }
   }
     function generate(){

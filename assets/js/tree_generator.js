@@ -356,7 +356,10 @@ var algo =  {
       }
     }
 
-      if (base.maxBranches > base.branches.length && this.avgValue > 10 && this.containOneofWords(words.Do_It_Yourself))
+      if (base.maxBranches > base.branches.length
+        && this.avgValue > 10
+        && this.containOneofWords(words.Do_It_Yourself)
+        && base.branches.length/base.maxBranches < base.points.length/base.maxPoints)
       {
         return "createBranche";
       }
@@ -412,10 +415,11 @@ var algo =  {
   enlarge: function(branche){
 
     // branche.strokeWidth += 2.5;
-    branche.strokeWidth += 4;
+    branche.strokeWidth += 3.5;
     for(var i = branche.branches.length - 1; i>=0; i--){
-      for(var j = 0; j < branche.branches[i].leaves.length; j++) {
+      for(var j = branche.branches[i].leaves.length -1; j >=0 ; j--) {
         // branche.branches[i].leaves[j].size = oCanvas.Zoom.level / 15;
+        branche.branches[i].leaves[j].strokeWidth +=  0.1;
           branche.branches[i].leaves[j].size +=  11;
       }
       this.enlarge(branche.branches[i]);

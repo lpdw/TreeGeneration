@@ -16,11 +16,22 @@ body{
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background: hsla(220,13%,18%, 1);
+          background: hsla(220,13%,18%, 1);
+  background: white;
 }
-
+.canvas{
+  min-height: 100vh;
+  min-width: calc(9/16 *100vh);
+}
+.canvas>*{
+  position:absolute;
+}
 #tree{
-  z-index: 50;
+
+  /*z-index: 50;*/
+}
+#animations{
+  background: transparent;
 }
 div.button{
   z-index: 10000;
