@@ -78,7 +78,7 @@ var algo =  {
       var action = this.getBrancheAndAction(this.treeGlobal.children[0]);
       this.getParams(action);
       this[action]();
-      console.log(action);
+      // console.log(action);
     }
 
     // console.log("======END GEN====");
@@ -169,7 +169,7 @@ var algo =  {
     this.addPoints();
   },
   initTrunk: function(){
-    console.log("initTrunk");
+    // console.log("initTrunk");
     var branche = this.treeGlobal.display.branche({
       strokeWidth: 15,
       strokeColor:white,

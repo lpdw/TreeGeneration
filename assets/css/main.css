@@ -2,7 +2,7 @@ body{
   margin:0;
   /*text-align: center;*/
   position: relative;
-  /*overflow: hidden;*/
+  overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -19,19 +19,20 @@ body{
           background: hsla(220,13%,18%, 1);
   /*background: white;*/
 }
-.canvas{
+/*.canvas{
   min-height: 100vh;
   min-width: calc(9/16 *100vh);
-}
-.canvas>*{
-  position:absolute;
-}
+}*/
 #tree{
-
+  overflow: hidden;
   z-index: 50;
 }
 div.button{
   z-index: 10000;
+  display: hidden;
+}
+div.button > button{
+  display: none;
 }
 .startAnimation {
   display: none;

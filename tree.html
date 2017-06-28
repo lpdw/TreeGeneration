@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Gene-Tree</title>
+    <meta description="arbre généré à partir d'input donnés">
+    <link rel="stylesheet" href="assets/css/main.css"> <!-- css de base -->
+    <link rel="stylesheet" href="assets/css/background.css">
+  </head>
+
+  <body>
+      <div class="startAnimation">
+        <div class="wrap">
+          <div class="drop-outer">
+            <svg class="drop" viewBox="0 0 40 40" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="20"/>
+            </svg>
+          </div>
+          <div class="ripple-start ripple-1-start">
+              <svg class="ripple-svg-start" viewBox="0 0 60 60" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24"/>
+              </svg>
+          </div>
+          <div class="ripple-start ripple-2-start">
+              <svg class="ripple-svg-start" viewBox="0 0 60 60" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24"/>
+              </svg>
+          </div>
+          <div class="ripple-start ripple-3-start">
+              <svg class="ripple-svg-start" viewBox="0 0 60 60" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24"/>
+              </svg>
+          </div>
+        </div>
+      </div>
+      <div id="loader">
+          <div class="wrap">
+            <div class="drop-outer">
+              <svg class="drop" viewBox="0 0 40 40" version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="20"/>
+              </svg>
+            </div>
+            <div class="ripple ripple-1">
+                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="24"/>
+                </svg>
+            </div>
+            <div class="ripple ripple-2">
+                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="24"/>
+                </svg>
+            </div>
+            <div class="ripple ripple-3">
+                <svg class="ripple-svg" viewBox="0 0 60 60" version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="24"/>
+                </svg>
+            </div>
+          </div>
+        <span>Arbre en cours d'arrosage...</span>
+      </div>
+      <div class="canvas">
+        <canvas id='tree' width='1920' height='1080'></canvas>
+      </div>
+
+      <div class="button">
+        <button type="button" name="button" id="buttonLots">add++</button>
+        <button type="button" name="button" id="button">add</button>
+        <button type="button" id="zoom">+</button>
+        <button type="button" id="dezoom">-</button>
+      </div>
+
+  </body>
+  <!-- sripts arbre -->
+  <script
+    src="https://code.jquery.com/jquery-2.2.4.min.js"
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.8.7/ocanvas.min.js"></script>
+    <script type="text/javascript" src="assets/js/socket.io.js"></script>
+  <script src="assets/js/tree_graphics.js"></script>
+  <script src="assets/js/tree_generator.js"></script>
+  <script src="assets/js/tree_setup.js"></script>
+  <!-- fin scripts arbre -->
+  <!-- script background -->
+  <!-- <script type="text/javascript" src="assets/js/background/granim.min.js"></script> -->
+  <!-- <script type="text/javascript" src="assets/js/background/background.js"></script> -->
+  <!-- fin script background -->
+  <!-- socket.io -->
+
+</html>
