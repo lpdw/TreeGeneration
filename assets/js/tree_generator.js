@@ -26,7 +26,7 @@ function rand(min, max) {
 
   for(var z = 0; z <= (amount*width); z = z+width) {
 // clip-path: circle(60px at center);
-    $('<div class="clipped" style="clip-path: circle(10px at center"></div>').appendTo($t);
+    $('<div class="clipped" style="clip-path: circle(5px at center"></div>').appendTo($t);
 
     if(z === (amount*width)-width) {
 
@@ -120,7 +120,7 @@ var algo =  {
     // console.log("======END GEN====");
   },
   startAnimation: function(thisParent){
-    $('.startAnimation').css("display", "block");
+    $('.startAnimation').css("display", "flex");
     setTimeout(function(){
 
       // EXPLODE
@@ -134,8 +134,10 @@ var algo =  {
     				// But otherwise it seems too slow. That's due to how I handled the timeout.
     				var v = rand(120, 90),
     					angle = rand(80, 89), // The angle (the angle of projection) is a random number between 80 and 89 degrees.
-    					theta = (angle * Math.PI) / 180, // Theta is the angle in radians
+              // theta = (angle * Math.PI) / 180, // Theta is the angle in radians
+    					theta = 1.2,
     					g = -9.8; // And gravity is -9.8. If you live on another planet feel free to change
+              // console.log(theta);
 
     				// $(this) as self
     				var self = $(this);
@@ -148,7 +150,9 @@ var algo =  {
 
     				// The direction can either be left (1), right (-1) or center (0). This is the horizontal direction.
     				var negate = [1, -1, 0],
-    					direction = negate[ Math.floor(Math.random() * negate.length) ];
+              direction = negate[ Math.floor(Math.random() * negate.length) ];
+              console.log(direction);
+    					// direction = 0;
 
     				// Some random numbers for altering the shapes position
     				var randDeg = rand(-5, 10),
