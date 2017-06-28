@@ -114,8 +114,16 @@ function initTree(){
     }
     tree.redraw();
     $("#loader").fadeOut(500);
+  });
+  // TEST SANS INPUTS
+  // $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/2017-06-20T19:16:26.207Z"+(new Date())).done(function(data){
+  //   console.log(data.inputs);
+  //   for (var i=0; i<data.inputs.length; i++){
+  //     algo.generate(data.inputs[i].words, false, true);
+  //   }
+  //   tree.redraw();
+  //   $("#loader").fadeOut(500);
   // });
-});
 }
 
   var iteration;
@@ -153,9 +161,8 @@ function initTree(){
                 console.log(JSON.stringify(myWords));
 
                 //generate();
-
             $.ajax( {
-                url:"https://api-tree.herokuapp.com/inputs",
+                url:"https://api-tree.herokuapp.com/inputs/",
                 data:JSON.stringify(myWords),
                 contentType: "application/json",
                 type:"POST"

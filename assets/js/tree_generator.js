@@ -1,3 +1,5 @@
+
+
 var words = {
 Tristesse: 1,
 Peur:2,
@@ -54,7 +56,7 @@ var algo =  {
       this.isPresent[words[keys[i]]] = false;
     }
   },
-  generate: function(datas, animate=true, init = false){
+  generate: function(datas, animate=true, init = true){
     // console.log("======START GEN====");
     this.nbInput ++;
     this.animate = animate;
@@ -82,14 +84,16 @@ var algo =  {
     // console.log("======END GEN====");
   },
   startAnimation: function(thisParent){
-    $('.startAnimation').css("display", "block");
+    $('.startAnimation').css("display", "flex");
     setTimeout(function(){
-      $('.startAnimation').css("display", "none");
+
+      // $('.startAnimation').css("display", "none");
       // Une fois l'animation terminée, on peut initialiser le tronc et les points
       thisParent.initTrunk();
       thisParent.getParams("addPoints");
       thisParent.addPoints();
-    }, 2800);
+      $(".startAnimation").fadeOut(500);
+    }, 5000);
   },
   addPoints: function(){
     var points = [];
