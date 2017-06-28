@@ -31,6 +31,9 @@ div.button{
   z-index: 10000;
   display: hidden;
 }
+div.button > button{
+  display: none;
+}
 @keyframes plantation {
     0% {top: 0;}
     60% {background-color: lightblue;}

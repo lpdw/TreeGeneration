@@ -109,7 +109,7 @@ function randomBranches(){
 function initTree(){
   // Regarder si mots sur API et les générer ( peut être mettre un delai)
   $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
-    console.log(data.inputs);
+
     for (var i=0; i<data.inputs.length; i++){
       algo.generate(data.inputs[i].words, false, true);
     }
@@ -172,8 +172,11 @@ tree.timeline.start();
   var socket = io.connect('https://api-tree.herokuapp.com');
   socket.on('new_inputs', function (data) {
     // New Branch
-    console.log("socket data : ", data);
-    algo.generate(data, true, false);
+    setTimeout(function(){
+      algo.generate(data, true, false);
+    }, 700);
+    // console.log("socket data : ", data);
+
     //socket.emit('my other event', { my: 'data' });
     //algo(tree_global).generate(data);
   });
