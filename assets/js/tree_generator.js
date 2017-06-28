@@ -71,6 +71,7 @@ var algo =  {
         // Sinon on initialise le tronc et les points
 
         this.initTrunk();
+        this.getParams("addPoints");
         this.addPoints();
       }
     }else{
