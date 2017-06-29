@@ -16,14 +16,15 @@ $(function () {
 	var affinityChecked = 0;
 
 	var cookieName = "treegenerationform";
-	var cookieTime = 2;
+	var cookieTime = 1; // in minutes
 
 	var APIGetWordsUrl = "https://api-tree.herokuapp.com/words";
 	var APIPostUrl = "https://api-tree.herokuapp.com/inputs";
 
 	var checkboxModel = "<span class=\"input col-xs-4 col-sm-3 col-md-2 clearfix\"><input type=\"checkbox\"/><label></label></span>";
 
-	var alreadyVoteMessage = "<div class=\"alert alert-warning alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Vous avez déjà voté ! Vous pourrez voter à nouveau dans XMINS minutes et XSECONDS secondes.</div>";
+	//var alreadyVoteMessage = "<div class=\"alert alert-warning alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Vous avez déjà voté ! Vous pourrez voter à nouveau dans XMINS minutes et XSECONDS secondes.</div>";
+	var alreadyVoteMessage = "<div class=\"alert alert-warning alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Vous avez déjà voté ! Vous pourrez voter à nouveau dans XSECONDS secondes.</div>";
 	var successVoteMessage = "<div class=\"alert alert-success alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>Merci pour votre vote ! Grâce à vous, l'arbre va grandir. </div>";
 
 	//---------------------------------------------
@@ -169,7 +170,6 @@ $(function () {
 					setCookie(cookieName, cookieTime);
 					$("main.container").find(".alert").remove();
 					$("main.container").prepend(successVoteMessage);
-					console.log(data);
 				},
 				error: function(data) {
 					console.log(data.responseText);
@@ -204,7 +204,7 @@ $(function () {
 	//---------------------------------------------
 	var userCanVote = function() {
 		var cookie = getCookie(cookieName);
-		if (cookie != "") {
+		if (cookie != "" && !isNaN(Date.parse(cookie))) {
 			cookieTime = new Date(cookie).getTime();
 			currentTime = new Date().getTime();
 			if (cookieTime < currentTime) {
