@@ -103,15 +103,26 @@ function randomBranches(){
     for(var j = 0; j < algo.goldenLeaves.length; j++){
       algo.goldenLeaves[j].leafRotation = i;
     }
-    i = i > 360 ? 0 : i+2;
+    i = i > 360 ? i-360 : i+2;
   });
 
 function initTree(){
   // Regarder si mots sur API et les générer ( peut être mettre un delai)
   $.ajax("https://api-tree.herokuapp.com/inputs/BeforeDate/"+(new Date())).done(function(data){
-    for (var i=0; i<data.inputs.length; i++){
-      algo.generate(data.inputs[i].words, false, true);
-    }
+    var i = 0;
+    (function(){
+      for (; i<data.inputs.length; i++){
+        algo.generate(data.inputs[i].words, false, true);
+        if ( i > 0 && i % 200 == 0) {
+            // Manually increment `i` because we break
+            i++;
+            // Set a timer for the next iteration
+            console.log("breaking");
+            window.setTimeout(arguments.callee);
+            break;
+        }
+      }
+    })();
     tree.redraw();
     $("#loader").fadeOut(500);
   });
